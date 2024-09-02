@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Månghorningar Formel", "Månghorningar Formel\Månghorningar Formel.pyproj", "{2333485C-0C9D-4402-B18A-E2044DC1D375}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2333485C-0C9D-4402-B18A-E2044DC1D375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2333485C-0C9D-4402-B18A-E2044DC1D375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A48132BC-6A60-4E91-A5C1-E2982D4BB43D}
+	EndGlobalSection
+EndGlobal
