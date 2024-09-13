@@ -11,8 +11,11 @@ using System.Windows.Forms;
 
 namespace LineDrawerDemo
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
+        public int numClicks = 0;
+        public Point tempMouseStartPos = new Point();
+        public Point tempMouseEndPos = new Point();
         List<LineObject> LineObjects = new List<LineObject>();
         public class LineObject
         {
@@ -21,29 +24,62 @@ namespace LineDrawerDemo
             public int endPosX { get; set; }
             public int endPosY { get; set; }
         }
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
         }
-        public void InitializeLineObject(int StartPosX, int StartPosY, int EndPosX, int EndPosY) 
-        { 
-            LineObjects.Add(new LineObject( StartPosX = 1,  )); 
-        }
-        public int fixYCoord(int yPos) { return this.Size.Height - yPos - 44;  }
-        private void Form1_Load(object sender, EventArgs e)
+        public void InitializeLineObject(int StartPosX, int StartPosY, int EndPosX, int EndPosY) //Create new line and add it onto the list
         {
+            LineObjects.Add(new LineObject 
+            { startPosX = StartPosX, startPosY = StartPosY, endPosX = EndPosX, endPosY = EndPosY });
+        }
+        public int fixYCoord(int yPos) { return this.Size.Height - yPos - 44 ; }
+        public void OnMouseClickGetCoords(int xPos, int yPos) //doesn't fully work, cant detect mouse click
+        {
+            if (numClicks == 0) { numClicks = 1; return; }
+            else if (numClicks == 1)
+            {
+                numClicks = 2;
+                tempMouseStartPos.X = xPos;
+                tempMouseStartPos.Y = yPos;
+            }
+            else if (numClicks == 2)
+            {
+                numClicks = 1;
+                tempMouseEndPos.X = xPos;
+                tempMouseEndPos.Y = yPos;
 
-            LineObjects.Add(new LineObject());
+                InitializeLineObject(tempMouseStartPos.X, tempMouseStartPos.Y, tempMouseEndPos.X, tempMouseEndPos.Y);
+            }
+
+        }
+        public void BeginGraphics()
+        {
             this.SuspendLayout();
-            Graphics g = this.CreateGraphics();
+            Graphics g = this.CreateGraphics(); //Create drawing canvas
 
-            foreach (LineObject lineObject in LineObjects)
+            foreach (LineObject lineObject in LineObjects) //Extract every line from list and draw them
             {
                 Point startPoint = new Point(lineObject.startPosX, fixYCoord(lineObject.startPosY));
                 Point endPoint = new Point(lineObject.endPosX, fixYCoord(lineObject.endPosY));
 
-                g.DrawLine(Pens.Black, startPoint, endPoint);
+                g.DrawLine(Pens.Black, startPoint, endPoint); //Draw Line from start to end points
             }
+        }
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+            BeginGraphics();
+        }
+
+        private void MainWindow_MouseClick(object sender, MouseEventArgs e)
+        {
+            OnMouseClickGetCoords(e.Location.X, e.Location.Y);
+
+        }
+
+        private void btnInitiate_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
