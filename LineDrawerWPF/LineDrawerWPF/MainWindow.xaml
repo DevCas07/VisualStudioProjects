@@ -6,6 +6,19 @@
         xmlns:local="clr-namespace:LineDrawerWPF"
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="LineDrawerWPF.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Canvas/>
+        Title="MainWindow" Height="450" Width="666">
+    <Canvas>
+        <TextBox x:Name="x1Box" TextWrapping="Wrap" Width="69" HorizontalAlignment="Left" Canvas.Left="25" Canvas.Top="4" VerticalAlignment="Top"/>
+        <TextBox x:Name="y1Box" TextWrapping="Wrap" Width="70" HorizontalAlignment="Center" Canvas.Left="25" Canvas.Top="29" VerticalAlignment="Center"/>
+        <TextBox x:Name="x2Box" TextWrapping="Wrap" Width="69" HorizontalAlignment="Left" Canvas.Left="124" Canvas.Top="4" VerticalAlignment="Top"/>
+        <TextBox x:Name="y2Box" TextWrapping="Wrap" Width="69" BorderThickness="1,1,1,1" HorizontalAlignment="Left" Canvas.Left="124" Canvas.Top="29" VerticalAlignment="Top"/>
+        <Label Content="x1&#xA;" Height="25" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Label Content="y1&#xA;" Height="25" Width="25" HorizontalAlignment="Center" Canvas.Top="25" VerticalAlignment="Top"/>
+        <Label Content="x2&#xA;" Height="25" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center" Canvas.Left="99"/>
+        <Label Content="y2&#xA;" Height="25" Width="26" HorizontalAlignment="Left" Canvas.Top="25" VerticalAlignment="Top" Canvas.Left="98"/>
+        <Button x:Name="btnConfirm" Content="Confirm" Click="btnConfirm_Click" HorizontalAlignment="Left" Canvas.Left="198" Canvas.Top="3" VerticalAlignment="Top"/>
+        <Rectangle x:Name="rectangle" Height="369" Canvas.Left="10" Stroke="Black" Canvas.Top="55" Width="646" HorizontalAlignment="Center" VerticalAlignment="Top" StrokeThickness="2"/>
+        <Canvas Height="365" Width="642" Canvas.Left="12" Canvas.Top="57" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Button x:Name="btnDraw" Content="Draw" Click="btnConfirm_Click" Canvas.Left="198" Canvas.Top="28" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Canvas>
 </Window>
