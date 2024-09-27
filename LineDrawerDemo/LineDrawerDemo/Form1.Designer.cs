@@ -48,12 +48,16 @@
             this.linesTreeView = new System.Windows.Forms.TreeView();
             this.tabCanvas = new System.Windows.Forms.TabPage();
             this.Canvas = new System.Windows.Forms.PictureBox();
+            this.selectedNodeLabel = new System.Windows.Forms.Label();
+            this.lineKeyLabel = new System.Windows.Forms.Label();
+            this.lineKeyBox = new System.Windows.Forms.NumericUpDown();
             this.tabControl1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabCanvas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -85,13 +89,14 @@
             // 
             // panel2
             // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.Controls.Add(this.btnCreate);
             this.panel2.Controls.Add(this.btnDraw);
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.btnRemove);
-            this.panel2.Location = new System.Drawing.Point(3, 59);
+            this.panel2.Location = new System.Drawing.Point(3, 85);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(166, 53);
+            this.panel2.Size = new System.Drawing.Size(166, 55);
             this.panel2.TabIndex = 11;
             // 
             // btnCreate
@@ -141,6 +146,10 @@
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.lineKeyBox);
+            this.panel1.Controls.Add(this.lineKeyLabel);
+            this.panel1.Controls.Add(this.selectedNodeLabel);
             this.panel1.Controls.Add(this.x1Label);
             this.panel1.Controls.Add(this.x2Box);
             this.panel1.Controls.Add(this.y1Box);
@@ -151,7 +160,7 @@
             this.panel1.Controls.Add(this.y2Box);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(166, 53);
+            this.panel1.Size = new System.Drawing.Size(166, 81);
             this.panel1.TabIndex = 10;
             // 
             // x1Label
@@ -166,7 +175,7 @@
             // x2Box
             // 
             this.x2Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.x2Box.Location = new System.Drawing.Point(115, 3);
+            this.x2Box.Location = new System.Drawing.Point(113, 3);
             this.x2Box.Name = "x2Box";
             this.x2Box.Size = new System.Drawing.Size(48, 20);
             this.x2Box.TabIndex = 5;
@@ -174,7 +183,7 @@
             // y1Box
             // 
             this.y1Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.y1Box.Location = new System.Drawing.Point(32, 30);
+            this.y1Box.Location = new System.Drawing.Point(30, 30);
             this.y1Box.Name = "y1Box";
             this.y1Box.Size = new System.Drawing.Size(48, 20);
             this.y1Box.TabIndex = 1;
@@ -182,7 +191,7 @@
             // y2Label
             // 
             this.y2Label.AutoSize = true;
-            this.y2Label.Location = new System.Drawing.Point(86, 32);
+            this.y2Label.Location = new System.Drawing.Point(84, 32);
             this.y2Label.Name = "y2Label";
             this.y2Label.Size = new System.Drawing.Size(23, 13);
             this.y2Label.TabIndex = 8;
@@ -200,7 +209,7 @@
             // x2Label
             // 
             this.x2Label.AutoSize = true;
-            this.x2Label.Location = new System.Drawing.Point(86, 5);
+            this.x2Label.Location = new System.Drawing.Point(84, 5);
             this.x2Label.Name = "x2Label";
             this.x2Label.Size = new System.Drawing.Size(23, 13);
             this.x2Label.TabIndex = 7;
@@ -209,7 +218,7 @@
             // x1Box
             // 
             this.x1Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.x1Box.Location = new System.Drawing.Point(32, 3);
+            this.x1Box.Location = new System.Drawing.Point(30, 3);
             this.x1Box.Name = "x1Box";
             this.x1Box.Size = new System.Drawing.Size(48, 20);
             this.x1Box.TabIndex = 0;
@@ -217,7 +226,7 @@
             // y2Box
             // 
             this.y2Box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.y2Box.Location = new System.Drawing.Point(115, 30);
+            this.y2Box.Location = new System.Drawing.Point(113, 30);
             this.y2Box.Name = "y2Box";
             this.y2Box.Size = new System.Drawing.Size(48, 20);
             this.y2Box.TabIndex = 6;
@@ -259,6 +268,31 @@
             this.Canvas.TabStop = false;
             this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
             // 
+            // selectedNodeLabel
+            // 
+            this.selectedNodeLabel.AutoSize = true;
+            this.selectedNodeLabel.Location = new System.Drawing.Point(67, 58);
+            this.selectedNodeLabel.Name = "selectedNodeLabel";
+            this.selectedNodeLabel.Size = new System.Drawing.Size(94, 13);
+            this.selectedNodeLabel.TabIndex = 9;
+            this.selectedNodeLabel.Text = "Selected node: [0]";
+            // 
+            // lineKeyLabel
+            // 
+            this.lineKeyLabel.AutoSize = true;
+            this.lineKeyLabel.Location = new System.Drawing.Point(3, 58);
+            this.lineKeyLabel.Name = "lineKeyLabel";
+            this.lineKeyLabel.Size = new System.Drawing.Size(28, 13);
+            this.lineKeyLabel.TabIndex = 11;
+            this.lineKeyLabel.Text = "Key:";
+            // 
+            // lineKeyBox
+            // 
+            this.lineKeyBox.Location = new System.Drawing.Point(30, 56);
+            this.lineKeyBox.Name = "lineKeyBox";
+            this.lineKeyBox.Size = new System.Drawing.Size(34, 20);
+            this.lineKeyBox.TabIndex = 12;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -266,7 +300,7 @@
             this.ClientSize = new System.Drawing.Size(550, 310);
             this.Controls.Add(this.tabControl1);
             this.Name = "MainWindow";
-            this.Text = "MainWindow";
+            this.Text = "LineDrawerDemo";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.ResizeEnd += new System.EventHandler(this.MainWindow_ResizeEnd);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainWindow_MouseClick);
@@ -277,6 +311,7 @@
             this.panel1.PerformLayout();
             this.tabCanvas.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -302,6 +337,9 @@
         private System.Windows.Forms.TextBox x1Box;
         private System.Windows.Forms.TextBox y2Box;
         private System.Windows.Forms.PictureBox Canvas;
+        private System.Windows.Forms.Label selectedNodeLabel;
+        private System.Windows.Forms.Label lineKeyLabel;
+        private System.Windows.Forms.NumericUpDown lineKeyBox;
     }
 }
 
