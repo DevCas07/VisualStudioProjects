@@ -28,16 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Main");
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Main");
+            this.linesTreeView = new System.Windows.Forms.TreeView();
+            this.Canvas = new System.Windows.Forms.PictureBox();
+            this.tabFile = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.btnReloadFile = new System.Windows.Forms.Button();
+            this.btnOpenFile = new System.Windows.Forms.Button();
+            this.btnSaveFile = new System.Windows.Forms.Button();
+            this.fileLocationLabel = new System.Windows.Forms.Label();
+            this.fileLocationBox = new System.Windows.Forms.TextBox();
             this.tabControl = new System.Windows.Forms.TabPage();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.checkBoxDebugMode = new System.Windows.Forms.CheckBox();
+            this.checkBoxLockInToLineEnds = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnCreate = new System.Windows.Forms.Button();
             this.btnDraw = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBoxDebugMode = new System.Windows.Forms.CheckBox();
             this.lineKeyBox = new System.Windows.Forms.NumericUpDown();
             this.lineKeyLabel = new System.Windows.Forms.Label();
             this.selectedNodeLabel = new System.Windows.Forms.Label();
@@ -49,44 +59,131 @@
             this.x2Label = new System.Windows.Forms.Label();
             this.x1Box = new System.Windows.Forms.TextBox();
             this.y2Box = new System.Windows.Forms.TextBox();
-            this.linesTreeView = new System.Windows.Forms.TreeView();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabCanvas = new System.Windows.Forms.TabPage();
-            this.Canvas = new System.Windows.Forms.PictureBox();
-            this.tabFile = new System.Windows.Forms.TabPage();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.btnReloadFile = new System.Windows.Forms.Button();
-            this.btnOpenFile = new System.Windows.Forms.Button();
-            this.btnSaveFile = new System.Windows.Forms.Button();
-            this.fileLocationLabel = new System.Windows.Forms.Label();
-            this.fileLocationBox = new System.Windows.Forms.TextBox();
-            this.tabControl1.SuspendLayout();
-            this.tabControl.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).BeginInit();
-            this.tabCanvas.SuspendLayout();
+            this.radioBtnEditLineMode = new System.Windows.Forms.RadioButton();
+            this.radioBtnCreateLineMode = new System.Windows.Forms.RadioButton();
+            this.panel5 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.tabFile.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabCanvas.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // linesTreeView
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.linesTreeView.Location = new System.Drawing.Point(172, 3);
+            this.linesTreeView.Name = "linesTreeView";
+            treeNode4.Name = "Node0";
+            treeNode4.Tag = "main";
+            treeNode4.Text = "Main";
+            treeNode4.ToolTipText = "Root";
+            this.linesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode4});
+            this.linesTreeView.Size = new System.Drawing.Size(476, 304);
+            this.linesTreeView.TabIndex = 0;
+            this.linesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.linesTreeView_AfterSelect);
+            // 
+            // Canvas
+            // 
+            this.Canvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabControl);
-            this.tabControl1.Controls.Add(this.tabCanvas);
-            this.tabControl1.Controls.Add(this.tabFile);
-            this.tabControl1.Location = new System.Drawing.Point(13, 13);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(659, 336);
-            this.tabControl1.TabIndex = 0;
+            this.Canvas.BackColor = System.Drawing.Color.White;
+            this.Canvas.Location = new System.Drawing.Point(0, 0);
+            this.Canvas.Name = "Canvas";
+            this.Canvas.Size = new System.Drawing.Size(651, 310);
+            this.Canvas.TabIndex = 0;
+            this.Canvas.TabStop = false;
+            this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
+            this.Canvas.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick);
+            // 
+            // tabFile
+            // 
+            this.tabFile.BackColor = System.Drawing.Color.White;
+            this.tabFile.Controls.Add(this.panel4);
+            this.tabFile.Location = new System.Drawing.Point(4, 22);
+            this.tabFile.Name = "tabFile";
+            this.tabFile.Size = new System.Drawing.Size(651, 310);
+            this.tabFile.TabIndex = 2;
+            this.tabFile.Text = "File";
+            // 
+            // panel4
+            // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.btnReloadFile);
+            this.panel4.Controls.Add(this.btnOpenFile);
+            this.panel4.Controls.Add(this.btnSaveFile);
+            this.panel4.Controls.Add(this.fileLocationLabel);
+            this.panel4.Controls.Add(this.fileLocationBox);
+            this.panel4.Location = new System.Drawing.Point(3, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(300, 57);
+            this.panel4.TabIndex = 13;
+            // 
+            // btnReloadFile
+            // 
+            this.btnReloadFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReloadFile.Location = new System.Drawing.Point(225, 29);
+            this.btnReloadFile.Name = "btnReloadFile";
+            this.btnReloadFile.Size = new System.Drawing.Size(70, 23);
+            this.btnReloadFile.TabIndex = 4;
+            this.btnReloadFile.Text = "Reload File";
+            this.btnReloadFile.UseVisualStyleBackColor = true;
+            this.btnReloadFile.Click += new System.EventHandler(this.btnReloadFile_Click);
+            // 
+            // btnOpenFile
+            // 
+            this.btnOpenFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOpenFile.Location = new System.Drawing.Point(149, 29);
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Size = new System.Drawing.Size(70, 23);
+            this.btnOpenFile.TabIndex = 3;
+            this.btnOpenFile.Text = "Open File";
+            this.btnOpenFile.UseVisualStyleBackColor = true;
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            // 
+            // btnSaveFile
+            // 
+            this.btnSaveFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSaveFile.Location = new System.Drawing.Point(75, 29);
+            this.btnSaveFile.Name = "btnSaveFile";
+            this.btnSaveFile.Size = new System.Drawing.Size(70, 23);
+            this.btnSaveFile.TabIndex = 2;
+            this.btnSaveFile.Text = "Save File";
+            this.btnSaveFile.UseVisualStyleBackColor = true;
+            this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
+            // 
+            // fileLocationLabel
+            // 
+            this.fileLocationLabel.AutoSize = true;
+            this.fileLocationLabel.Location = new System.Drawing.Point(3, 5);
+            this.fileLocationLabel.Name = "fileLocationLabel";
+            this.fileLocationLabel.Size = new System.Drawing.Size(70, 13);
+            this.fileLocationLabel.TabIndex = 1;
+            this.fileLocationLabel.Text = "File Location:";
+            // 
+            // fileLocationBox
+            // 
+            this.fileLocationBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.fileLocationBox.Location = new System.Drawing.Point(75, 3);
+            this.fileLocationBox.Name = "fileLocationBox";
+            this.fileLocationBox.ReadOnly = true;
+            this.fileLocationBox.Size = new System.Drawing.Size(220, 20);
+            this.fileLocationBox.TabIndex = 0;
             // 
             // tabControl
             // 
             this.tabControl.BackColor = System.Drawing.Color.White;
+            this.tabControl.Controls.Add(this.panel5);
+            this.tabControl.Controls.Add(this.panel3);
             this.tabControl.Controls.Add(this.panel2);
             this.tabControl.Controls.Add(this.panel1);
             this.tabControl.Controls.Add(this.linesTreeView);
@@ -97,6 +194,39 @@
             this.tabControl.TabIndex = 1;
             this.tabControl.Text = "Control";
             // 
+            // panel3
+            // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.radioBtnCreateLineMode);
+            this.panel3.Controls.Add(this.radioBtnEditLineMode);
+            this.panel3.Controls.Add(this.checkBoxLockInToLineEnds);
+            this.panel3.Location = new System.Drawing.Point(3, 168);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(166, 70);
+            this.panel3.TabIndex = 13;
+            // 
+            // checkBoxDebugMode
+            // 
+            this.checkBoxDebugMode.AutoSize = true;
+            this.checkBoxDebugMode.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxDebugMode.Name = "checkBoxDebugMode";
+            this.checkBoxDebugMode.Size = new System.Drawing.Size(88, 17);
+            this.checkBoxDebugMode.TabIndex = 12;
+            this.checkBoxDebugMode.Text = "Debug Mode";
+            this.checkBoxDebugMode.UseVisualStyleBackColor = true;
+            this.checkBoxDebugMode.CheckedChanged += new System.EventHandler(this.checkBoxLabelLines_CheckedChanged);
+            // 
+            // checkBoxLockInToLineEnds
+            // 
+            this.checkBoxLockInToLineEnds.AutoSize = true;
+            this.checkBoxLockInToLineEnds.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxLockInToLineEnds.Name = "checkBoxLockInToLineEnds";
+            this.checkBoxLockInToLineEnds.Size = new System.Drawing.Size(128, 17);
+            this.checkBoxLockInToLineEnds.TabIndex = 13;
+            this.checkBoxLockInToLineEnds.Text = "Lock In To Line Ends";
+            this.checkBoxLockInToLineEnds.UseVisualStyleBackColor = true;
+            this.checkBoxLockInToLineEnds.CheckedChanged += new System.EventHandler(this.checkBoxLockInToLineEnds_CheckedChanged);
+            // 
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -104,7 +234,7 @@
             this.panel2.Controls.Add(this.btnDraw);
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.btnRemove);
-            this.panel2.Location = new System.Drawing.Point(3, 108);
+            this.panel2.Location = new System.Drawing.Point(3, 86);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(166, 55);
             this.panel2.TabIndex = 11;
@@ -157,7 +287,6 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.checkBoxDebugMode);
             this.panel1.Controls.Add(this.lineKeyBox);
             this.panel1.Controls.Add(this.lineKeyLabel);
             this.panel1.Controls.Add(this.selectedNodeLabel);
@@ -171,19 +300,8 @@
             this.panel1.Controls.Add(this.y2Box);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(166, 103);
+            this.panel1.Size = new System.Drawing.Size(166, 81);
             this.panel1.TabIndex = 10;
-            // 
-            // checkBoxDebugMode
-            // 
-            this.checkBoxDebugMode.AutoSize = true;
-            this.checkBoxDebugMode.Location = new System.Drawing.Point(6, 81);
-            this.checkBoxDebugMode.Name = "checkBoxDebugMode";
-            this.checkBoxDebugMode.Size = new System.Drawing.Size(80, 17);
-            this.checkBoxDebugMode.TabIndex = 12;
-            this.checkBoxDebugMode.Text = "Label Lines";
-            this.checkBoxDebugMode.UseVisualStyleBackColor = true;
-            this.checkBoxDebugMode.CheckedChanged += new System.EventHandler(this.checkBoxLabelLines_CheckedChanged);
             // 
             // lineKeyBox
             // 
@@ -278,19 +396,19 @@
             this.y2Box.Size = new System.Drawing.Size(48, 20);
             this.y2Box.TabIndex = 6;
             // 
-            // linesTreeView
+            // tabControl1
             // 
-            this.linesTreeView.Location = new System.Drawing.Point(172, 3);
-            this.linesTreeView.Name = "linesTreeView";
-            treeNode2.Name = "Node0";
-            treeNode2.Tag = "main";
-            treeNode2.Text = "Main";
-            treeNode2.ToolTipText = "Root";
-            this.linesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2});
-            this.linesTreeView.Size = new System.Drawing.Size(476, 304);
-            this.linesTreeView.TabIndex = 0;
-            this.linesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.linesTreeView_AfterSelect);
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabControl);
+            this.tabControl1.Controls.Add(this.tabCanvas);
+            this.tabControl1.Controls.Add(this.tabFile);
+            this.tabControl1.Location = new System.Drawing.Point(13, 13);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(659, 336);
+            this.tabControl1.TabIndex = 0;
             // 
             // tabCanvas
             // 
@@ -303,93 +421,38 @@
             this.tabCanvas.Text = "Canvas";
             this.tabCanvas.UseVisualStyleBackColor = true;
             // 
-            // Canvas
+            // radioBtnEditLineMode
             // 
-            this.Canvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Canvas.Location = new System.Drawing.Point(0, 0);
-            this.Canvas.Name = "Canvas";
-            this.Canvas.Size = new System.Drawing.Size(651, 310);
-            this.Canvas.TabIndex = 0;
-            this.Canvas.TabStop = false;
-            this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
-            this.Canvas.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick);
-            this.Canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseDown);
+            this.radioBtnEditLineMode.AutoSize = true;
+            this.radioBtnEditLineMode.Location = new System.Drawing.Point(3, 26);
+            this.radioBtnEditLineMode.Name = "radioBtnEditLineMode";
+            this.radioBtnEditLineMode.Size = new System.Drawing.Size(96, 17);
+            this.radioBtnEditLineMode.TabIndex = 16;
+            this.radioBtnEditLineMode.TabStop = true;
+            this.radioBtnEditLineMode.Text = "Edit Line Mode";
+            this.radioBtnEditLineMode.UseVisualStyleBackColor = true;
+            this.radioBtnEditLineMode.CheckedChanged += new System.EventHandler(this.radioBtnEditLineMode_CheckedChanged);
             // 
-            // tabFile
+            // radioBtnCreateLineMode
             // 
-            this.tabFile.BackColor = System.Drawing.Color.White;
-            this.tabFile.Controls.Add(this.panel4);
-            this.tabFile.Location = new System.Drawing.Point(4, 22);
-            this.tabFile.Name = "tabFile";
-            this.tabFile.Size = new System.Drawing.Size(651, 310);
-            this.tabFile.TabIndex = 2;
-            this.tabFile.Text = "File";
+            this.radioBtnCreateLineMode.AutoSize = true;
+            this.radioBtnCreateLineMode.Location = new System.Drawing.Point(3, 49);
+            this.radioBtnCreateLineMode.Name = "radioBtnCreateLineMode";
+            this.radioBtnCreateLineMode.Size = new System.Drawing.Size(109, 17);
+            this.radioBtnCreateLineMode.TabIndex = 17;
+            this.radioBtnCreateLineMode.TabStop = true;
+            this.radioBtnCreateLineMode.Text = "Create Line Mode";
+            this.radioBtnCreateLineMode.UseVisualStyleBackColor = true;
+            this.radioBtnCreateLineMode.CheckedChanged += new System.EventHandler(this.radioBtnCreateLineMode_CheckedChanged);
             // 
-            // panel4
+            // panel5
             // 
-            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel4.Controls.Add(this.btnReloadFile);
-            this.panel4.Controls.Add(this.btnOpenFile);
-            this.panel4.Controls.Add(this.btnSaveFile);
-            this.panel4.Controls.Add(this.fileLocationLabel);
-            this.panel4.Controls.Add(this.fileLocationBox);
-            this.panel4.Location = new System.Drawing.Point(3, 3);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(300, 57);
-            this.panel4.TabIndex = 13;
-            // 
-            // btnReloadFile
-            // 
-            this.btnReloadFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReloadFile.Location = new System.Drawing.Point(225, 29);
-            this.btnReloadFile.Name = "btnReloadFile";
-            this.btnReloadFile.Size = new System.Drawing.Size(70, 23);
-            this.btnReloadFile.TabIndex = 4;
-            this.btnReloadFile.Text = "Reload File";
-            this.btnReloadFile.UseVisualStyleBackColor = true;
-            this.btnReloadFile.Click += new System.EventHandler(this.btnReloadFile_Click);
-            // 
-            // btnOpenFile
-            // 
-            this.btnOpenFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOpenFile.Location = new System.Drawing.Point(149, 29);
-            this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(70, 23);
-            this.btnOpenFile.TabIndex = 3;
-            this.btnOpenFile.Text = "Open File";
-            this.btnOpenFile.UseVisualStyleBackColor = true;
-            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
-            // 
-            // btnSaveFile
-            // 
-            this.btnSaveFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaveFile.Location = new System.Drawing.Point(75, 29);
-            this.btnSaveFile.Name = "btnSaveFile";
-            this.btnSaveFile.Size = new System.Drawing.Size(70, 23);
-            this.btnSaveFile.TabIndex = 2;
-            this.btnSaveFile.Text = "Save File";
-            this.btnSaveFile.UseVisualStyleBackColor = true;
-            this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
-            // 
-            // fileLocationLabel
-            // 
-            this.fileLocationLabel.AutoSize = true;
-            this.fileLocationLabel.Location = new System.Drawing.Point(3, 5);
-            this.fileLocationLabel.Name = "fileLocationLabel";
-            this.fileLocationLabel.Size = new System.Drawing.Size(70, 13);
-            this.fileLocationLabel.TabIndex = 1;
-            this.fileLocationLabel.Text = "File Location:";
-            // 
-            // fileLocationBox
-            // 
-            this.fileLocationBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fileLocationBox.Location = new System.Drawing.Point(75, 3);
-            this.fileLocationBox.Name = "fileLocationBox";
-            this.fileLocationBox.ReadOnly = true;
-            this.fileLocationBox.Size = new System.Drawing.Size(220, 20);
-            this.fileLocationBox.TabIndex = 0;
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.checkBoxDebugMode);
+            this.panel5.Location = new System.Drawing.Point(3, 143);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(166, 23);
+            this.panel5.TabIndex = 18;
             // 
             // MainWindow
             // 
@@ -400,34 +463,44 @@
             this.Name = "MainWindow";
             this.Text = "LineDrawerDemo";
             this.Load += new System.EventHandler(this.MainWindow_Load);
-            this.tabControl1.ResumeLayout(false);
-            this.tabControl.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).EndInit();
-            this.tabCanvas.ResumeLayout(false);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainWindow_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
             this.tabFile.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.tabControl.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabCanvas.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabCanvas;
         private System.Windows.Forms.PictureBox Canvas;
+        private System.Windows.Forms.TreeView linesTreeView;
+        private System.Windows.Forms.TabPage tabFile;
+        private System.Windows.Forms.Button btnReloadFile;
+        private System.Windows.Forms.Button btnOpenFile;
+        private System.Windows.Forms.Button btnSaveFile;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label fileLocationLabel;
+        private System.Windows.Forms.TextBox fileLocationBox;
         private System.Windows.Forms.TabPage tabControl;
+        private System.Windows.Forms.CheckBox checkBoxDebugMode;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnCreate;
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.CheckBox checkBoxDebugMode;
         private System.Windows.Forms.NumericUpDown lineKeyBox;
         private System.Windows.Forms.Label lineKeyLabel;
         private System.Windows.Forms.Label selectedNodeLabel;
@@ -439,14 +512,13 @@
         private System.Windows.Forms.Label x2Label;
         private System.Windows.Forms.TextBox x1Box;
         private System.Windows.Forms.TextBox y2Box;
-        private System.Windows.Forms.TreeView linesTreeView;
-        private System.Windows.Forms.TabPage tabFile;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Label fileLocationLabel;
-        private System.Windows.Forms.TextBox fileLocationBox;
-        private System.Windows.Forms.Button btnSaveFile;
-        private System.Windows.Forms.Button btnOpenFile;
-        private System.Windows.Forms.Button btnReloadFile;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabCanvas;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.CheckBox checkBoxLockInToLineEnds;
+        private System.Windows.Forms.RadioButton radioBtnCreateLineMode;
+        private System.Windows.Forms.RadioButton radioBtnEditLineMode;
+        private System.Windows.Forms.Panel panel5;
     }
 }
 
