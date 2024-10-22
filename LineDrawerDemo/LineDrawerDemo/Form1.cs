@@ -19,11 +19,12 @@ namespace LineDrawerDemo
     public partial class MainWindow : Form
     {
         //Neccesarry Public Varibles
-        public int selectedCanvasLineEnd;
+        public int selectedCanvasLineEnd = 0;
         public int numClicks = 0;
         public bool mouseClicked = false;
         public Point tempMouseStartPos = new Point();
         public Point tempMouseEndPos = new Point();
+        public Point selectedPointPos = new Point();
         public int selectedNode;
         public bool lockInToLineEnds = false;
         public bool DebugMode = false;
@@ -33,6 +34,7 @@ namespace LineDrawerDemo
         public int minSelectDistance = 10;
         public int lineWidth = 1;
         Dictionary<int, LineObject> LineObjects = new Dictionary<int, LineObject>();
+        Dictionary<int, int> selectedLineObjects = new Dictionary<int, int>();
 
         public class LineObject //LineObject 
         {
@@ -404,7 +406,6 @@ namespace LineDrawerDemo
             int key = 0;
             bool available = false;
             int count = 0;
-            List<int> lines;
 
             while (available == false)
             {
@@ -421,10 +422,22 @@ namespace LineDrawerDemo
         //
         // Necessary miscellaneous handling ------------------------------------------
         //
+        public void resetSelectedLine()
+        {
+            numClicks = 0;
+            selectedLinesTreeView.Nodes[0].Nodes.Clear();
+            selectedNodeLabel.Text = "Selected node: [None]";
+            selectedNodeLabel2.Text = "Selected node: [None]";
+        }
+        public void InitialiseTempSelectedLine(int key, int lineEnd)
+        {
+            selectedLineObjects.Add(key, lineEnd);
+        }
         public void setSelectedNode(int nodeKey) //Changes varible and label to correspont to correct selectedNode
         {
             selectedNode = nodeKey;
             selectedNodeLabel.Text = "Selected node: [" + selectedNode + "]";
+            selectedNodeLabel2.Text = "Selected node: [" + selectedNode + "]";
         }
         public void linesDraw() //Forces canvas to redraw
         {
@@ -449,6 +462,22 @@ namespace LineDrawerDemo
 
             }
             linesTreeView.Nodes[0].Expand();
+        }
+        public void updateSelectedLineTreeView()
+        {
+            selectedLinesTreeView.Nodes[0].Nodes.Clear();
+            if (selectedLineObjects.Count > 0) {
+                foreach (var line in selectedLineObjects)
+                {
+                    int lineEnd = line.Value;
+                    TreeNode node = new TreeNode();
+                    node.Text = "Line" + line.Key.ToString() + ", End:" + line.Value;
+                    node.Name = "line" + line.Key.ToString() + ", End:" + line.Value;
+                    node.Tag = line.Key;
+                    selectedLinesTreeView.Nodes[0].Nodes.Add(node);
+                }
+                selectedLinesTreeView.Nodes[0].Expand();
+            }
         }
 
         //
@@ -513,7 +542,8 @@ namespace LineDrawerDemo
 
                 g.DrawLine(pen, startPoint, endPoint); //Draw Line from start to end points
 
-                if (DebugMode == true) {
+                if (DebugMode == true)
+                {
                     double tempX = lineObject.Value.Realx1;
                     double tempY = lineObject.Value.Realy1;
                     double tempDiffX = (lineObject.Value.Realx2 - lineObject.Value.Realx1);
@@ -532,7 +562,8 @@ namespace LineDrawerDemo
                         tempX = tempX + tempDiffX / 2;
                         tempY = tempY + tempDiffY / 2 + 2; // - kValue / 10;
                     }
-                    else if (kValue > -1 && kValue < 1) {
+                    else if (kValue > -1 && kValue < 1)
+                    {
                         tempX = tempX + tempDiffX / 2;
                         tempY = tempY - tempDiffY / 2;
                     }
@@ -541,7 +572,7 @@ namespace LineDrawerDemo
                     int posY = (int)Math.Round(tempY, 1);
 
                     g.DrawString("line" + lineObject.Key, DefaultFont, Brushes.Black, new Point(posX, posY));
-                    
+
                     //Label label = new Label();
                     //label.Name = "line" + lineObject.Key;
                     //label.Text = "line" + lineObject.Key;
@@ -550,63 +581,19 @@ namespace LineDrawerDemo
                     //Canvas.Controls.Add(label);
                 }
             }
-            if (DebugMode == true) 
+            if (DebugMode == true)
             {
-                if (editLineMode == true) //Edit line mode 
-                {
-                    Rectangle rec = new Rectangle(); // Draws out a rectangle on top of selected line's line end to visualy show selected line end
-                    Pen pen = new Pen(Brushes.Gray, 1);
+                Rectangle rec = new Rectangle(); // Draws out a rectangle on top of selected line's line end to visualy show selected line end
+                Pen pen = new Pen(Brushes.Gray, 2);
 
-                    if (selectedCanvasLineEnd == 1 && numClicks == 1)
-                    {
-                        rec.X = LineObjects[selectedNode].Realx1 - 5;
-                        rec.Y = LineObjects[selectedNode].Realy1 - 5;
+                rec.X = selectedPointPos.X - minSelectDistance / 2;
+                rec.Y = selectedPointPos.Y - minSelectDistance / 2;
+                rec.Width = minSelectDistance;
+                rec.Height = minSelectDistance;
 
-                        rec.Width = 10;
-                        rec.Height = 10;
-
-                        g.DrawRectangle(pen, rec);
-                    }
-                    else if (selectedCanvasLineEnd == 2 && numClicks == 1)
-                    {
-                        rec.X = LineObjects[selectedNode].Realx2 - 5;
-                        rec.Y = LineObjects[selectedNode].Realy2 - 5;
-
-                        rec.Width = 10;
-                        rec.Height = 10;
-
-                        g.DrawRectangle(pen, rec);
-                    }
-                }
-                else if (createLineMode == true)
-                {
-                    Rectangle rec = new Rectangle(); // Draws out a rectangle on top of selected line's line end to visualy show selected line end
-                    Pen pen = new Pen(Brushes.Gray, 2);
-
-                    if (numClicks == 0)
-                    {
-                        rec.X = tempMouseStartPos.X - 5;
-                        rec.Y = tempMouseStartPos.Y - 5;
-
-                        rec.Height = 10;
-                        rec.Width = 10;
-
-                        g.DrawRectangle(pen, rec);
-                    }
-                    else if (numClicks == 1)
-                    {
-                        rec.X = tempMouseEndPos.X - 5;
-                        rec.Y = tempMouseEndPos.Y - 5;
-
-                        rec.Height = 10;
-                        rec.Width = 10;
-
-                        g.DrawRectangle(pen, rec);
-                    }
-                }
+                g.DrawRectangle(pen, rec);
             }
         }
-
         //
         // ------------------------------------------
         //
@@ -614,9 +601,8 @@ namespace LineDrawerDemo
         {
             if (linesTreeView.SelectedNode.Tag.ToString() != "main") {
 
-                selectedNode = (int)linesTreeView.SelectedNode.Tag;
+                setSelectedNode((int)linesTreeView.SelectedNode.Tag);
                 lineKeyBox.Value = selectedNode;
-                selectedNodeLabel.Text = "Selected node: [" + selectedNode + "]";
                 numClicks = 0;
 
                 //if (!checkKeyAvailability(selectedNode)) //Checks if selected node exists so it can write to from existing LineObject
@@ -627,6 +613,24 @@ namespace LineDrawerDemo
                     if (LineObjects[selectedNode].Realx2 != 0) { x2Box.Text = LineObjects[selectedNode].Realx2.ToString(); }
                     if (LineObjects[selectedNode].Realy2 != 0) { y2Box.Text = LineObjects[selectedNode].Realy2.ToString(); }
                 }
+            }
+            else { generateException("invalid_selected_node"); } // invalid selected node
+        }
+        private void selectedLinesTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (selectedLinesTreeView.SelectedNode.Tag.ToString() != "main") {
+                
+                setSelectedNode((int)selectedLinesTreeView.SelectedNode.Tag);
+                lineKeyBox.Value = selectedNode;
+                selectedCanvasLineEnd = selectedLineObjects[selectedNode];
+                int[] endPoint = getLineEndCoordinates(selectedNode, selectedCanvasLineEnd);
+                selectedPointPos = new Point(endPoint[0], endPoint[1]);
+                numClicks = 1;
+
+                if (LineObjects[selectedNode].Realx1 != 0) { x1Box.Text = LineObjects[selectedNode].Realx1.ToString(); }
+                if (LineObjects[selectedNode].Realy1 != 0) { y1Box.Text = LineObjects[selectedNode].Realy1.ToString(); }
+                if (LineObjects[selectedNode].Realx2 != 0) { x2Box.Text = LineObjects[selectedNode].Realx2.ToString(); }
+                if (LineObjects[selectedNode].Realy2 != 0) { y2Box.Text = LineObjects[selectedNode].Realy2.ToString(); }
             }
             else { generateException("invalid_selected_node"); } // invalid selected node
         }
@@ -667,13 +671,27 @@ namespace LineDrawerDemo
                     {
                         if (LineObjects.Count > 0)
                         {
-                            int tempLineEnd;
-
-                            if (isWithinDistanceToLineEnd(selectedNode, e.Location.X, e.Location.Y, minSelectDistance, out tempLineEnd))
+                            List<int[]> lines = getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, minSelectDistance);
+                            if (lines.Count == 1)
                             {
-                                selectedCanvasLineEnd = tempLineEnd;
+                                int[] line = lines[0];
+                                setSelectedNode(line[0]); //Set selected node varible and labels
+                                selectedCanvasLineEnd = line[1]; //Set to selected line end
                                 numClicks = 1;
-                                linesDraw();
+
+                                int[] endPoint = getLineEndCoordinates(selectedNode, selectedCanvasLineEnd);
+                                selectedPointPos = new Point(endPoint[0], endPoint[1]);
+                            }
+                            else if (lines.Count > 0)
+                            {
+                                selectedLineObjects.Clear();
+                                foreach (var line in lines)
+                                {
+                                    selectedLineObjects.Add(line[0], line[1]);
+                                }
+                                selectedLinesTreeView.Nodes[0].Nodes.Clear();
+                                updateSelectedLineTreeView();
+                                
                             }
                             else { generateException("no_line_end_nearby"); } // no close line end
                         }
@@ -687,14 +705,16 @@ namespace LineDrawerDemo
                             int[] endPoint = getClosestLineEndCoordinate(e.Location.X, e.Location.Y, minSelectDistance, out int lineEnd);
                             tempMouseStartPos = new Point(endPoint[0], endPoint[1]);
                             numClicks = 1;
-
+                            selectedPointPos = new Point(endPoint[0], endPoint[1]);
                         }
                         else //Executes if no nearby line is found, if lines <= 0
                         {
                             //generateException("");
                             tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
+                            selectedPointPos = new Point(e.Location.X, e.Location.Y);
                             numClicks = 1;
                         }
+                        linesDraw();
                     }
                 }
                 else if (numClicks == 1) //Second mouse click
@@ -716,7 +736,6 @@ namespace LineDrawerDemo
                                         LineObjects[selectedNode].Realx2, //x2
                                         LineObjects[selectedNode].Realy2 //y2
                                         );
-                                    linesDraw();
                                 }
                                 else if (selectedCanvasLineEnd == 2)
                                 {
@@ -726,9 +745,10 @@ namespace LineDrawerDemo
                                         endPoint[0], //x2
                                         endPoint[1] //y2
                                         );
-                                    linesDraw();
                                 }
+                                selectedPointPos = new Point(endPoint[0], endPoint[1]); // viewing rectangle coordinates
                                 numClicks = 0;
+                                linesDraw();
                             }
                             else //Executes if no nearby line is found, if lines <= 0
                             {
@@ -741,7 +761,6 @@ namespace LineDrawerDemo
                                         LineObjects[selectedNode].Realx2, //x2
                                         LineObjects[selectedNode].Realy2 //y2
                                         );
-                                    linesDraw();
                                 }
                                 else if (selectedCanvasLineEnd == 2) //checks if selected line end is second end
                                 {
@@ -751,10 +770,12 @@ namespace LineDrawerDemo
                                         e.Location.X, //x2
                                         e.Location.Y //y2
                                         );
-                                    linesDraw();
                                 }
+                                selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                                 numClicks = 0;
+                                linesDraw();
                             }
+                            resetSelectedLine(); //Maybe add a if statement to a multi after eachother selecting option public varible
                         }
                         else { generateException("no_existing_lines"); } // no existing lines
                     }
@@ -775,7 +796,6 @@ namespace LineDrawerDemo
                                     tempMouseEndPos.X,
                                     tempMouseEndPos.Y
                                     );
-                                linesDraw();
                             }
                             else if (lineEnd == 2)
                             {
@@ -785,9 +805,10 @@ namespace LineDrawerDemo
                                     endPoint[0],
                                     endPoint[1]
                                     );
-                                linesDraw();
                             }
+                            //selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                             numClicks = 0;
+                            linesDraw();
                         }
                         else //Executes if no nearby line is found, if lines <= 0
                         {
@@ -812,7 +833,9 @@ namespace LineDrawerDemo
         //
         private void checkBoxLockInToLineEnds_CheckedChanged(object sender, EventArgs e)
         {
-            lockInToLineEnds = checkBoxDebugMode.Checked;
+            //lockInToLineEnds = checkBoxDebugMode.Checked;
+            if (checkBoxDebugMode.CheckState == CheckState.Checked) { lockInToLineEnds = true; }
+            else if (checkBoxDebugMode.CheckState == CheckState.Unchecked) { lockInToLineEnds = false; }
         }
         private void radioBtnEditLineMode_CheckedChanged(object sender, EventArgs e)
         {
@@ -828,6 +851,11 @@ namespace LineDrawerDemo
         private void button1_Click(object sender, EventArgs e)
         {
             generateException("test_id");
+        }
+
+        private void btnCancelLineManipulation_Click(object sender, EventArgs e)
+        {
+            resetSelectedLine();
         }
     }
 }
