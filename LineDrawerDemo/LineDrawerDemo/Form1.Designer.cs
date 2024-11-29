@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Main");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Main");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Main");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Main");
             this.Canvas = new System.Windows.Forms.PictureBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.checkBoxDebugMode = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.radioBtnRemoveLineMode = new System.Windows.Forms.RadioButton();
             this.radioBtnCreateLineMode = new System.Windows.Forms.RadioButton();
             this.radioBtnEditLineMode = new System.Windows.Forms.RadioButton();
             this.checkBoxLockInToLineEnds = new System.Windows.Forms.CheckBox();
@@ -47,10 +48,14 @@
             this.fileLocationLabel = new System.Windows.Forms.Label();
             this.fileLocationBox = new System.Windows.Forms.TextBox();
             this.tabCanvas = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.lineMultiLockingBox = new System.Windows.Forms.CheckBox();
             this.panel7 = new System.Windows.Forms.Panel();
             this.minSelectDistanceBox = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.btnConfirmCanvasLineAction = new System.Windows.Forms.Button();
             this.btnCancelCanvasLineAction = new System.Windows.Forms.Button();
             this.selectedNodeLabel2 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabPage();
@@ -73,9 +78,6 @@
             this.y2Box = new System.Windows.Forms.TextBox();
             this.linesTreeView = new System.Windows.Forms.TreeView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.radioBtnRemoveLineMode = new System.Windows.Forms.RadioButton();
-            this.btnConfirmCanvasLineAction = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -83,6 +85,7 @@
             this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
             this.tabCanvas.SuspendLayout();
+            this.panel9.SuspendLayout();
             this.panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minSelectDistanceBox)).BeginInit();
             this.panel8.SuspendLayout();
@@ -140,6 +143,17 @@
             this.panel3.Size = new System.Drawing.Size(166, 92);
             this.panel3.TabIndex = 13;
             // 
+            // radioBtnRemoveLineMode
+            // 
+            this.radioBtnRemoveLineMode.AutoSize = true;
+            this.radioBtnRemoveLineMode.Location = new System.Drawing.Point(3, 72);
+            this.radioBtnRemoveLineMode.Name = "radioBtnRemoveLineMode";
+            this.radioBtnRemoveLineMode.Size = new System.Drawing.Size(118, 17);
+            this.radioBtnRemoveLineMode.TabIndex = 18;
+            this.radioBtnRemoveLineMode.Text = "Remove Line Mode";
+            this.radioBtnRemoveLineMode.UseVisualStyleBackColor = true;
+            this.radioBtnRemoveLineMode.CheckedChanged += new System.EventHandler(this.radioBtnRemoveLineMode_CheckedChanged);
+            // 
             // radioBtnCreateLineMode
             // 
             this.radioBtnCreateLineMode.AutoSize = true;
@@ -177,11 +191,11 @@
             // 
             this.selectedLinesTreeView.Location = new System.Drawing.Point(3, 3);
             this.selectedLinesTreeView.Name = "selectedLinesTreeView";
-            treeNode5.Name = "Node0";
-            treeNode5.Tag = "main";
-            treeNode5.Text = "Main";
+            treeNode1.Name = "Node0";
+            treeNode1.Tag = "main";
+            treeNode1.Text = "Main";
             this.selectedLinesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5});
+            treeNode1});
             this.selectedLinesTreeView.Size = new System.Drawing.Size(166, 126);
             this.selectedLinesTreeView.TabIndex = 1;
             this.selectedLinesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.selectedLinesTreeView_AfterSelect);
@@ -272,6 +286,8 @@
             // tabCanvas
             // 
             this.tabCanvas.BackColor = System.Drawing.Color.White;
+            this.tabCanvas.Controls.Add(this.button1);
+            this.tabCanvas.Controls.Add(this.panel9);
             this.tabCanvas.Controls.Add(this.panel7);
             this.tabCanvas.Controls.Add(this.panel8);
             this.tabCanvas.Controls.Add(this.selectedLinesTreeView);
@@ -284,14 +300,44 @@
             this.tabCanvas.TabIndex = 0;
             this.tabCanvas.Text = "Canvas";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(91, 106);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // panel9
+            // 
+            this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel9.Controls.Add(this.lineMultiLockingBox);
+            this.panel9.Location = new System.Drawing.Point(3, 342);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(166, 24);
+            this.panel9.TabIndex = 21;
+            // 
+            // lineMultiLockingBox
+            // 
+            this.lineMultiLockingBox.AutoSize = true;
+            this.lineMultiLockingBox.Location = new System.Drawing.Point(3, 3);
+            this.lineMultiLockingBox.Name = "lineMultiLockingBox";
+            this.lineMultiLockingBox.Size = new System.Drawing.Size(112, 17);
+            this.lineMultiLockingBox.TabIndex = 13;
+            this.lineMultiLockingBox.Text = "Multi Line Locking";
+            this.lineMultiLockingBox.UseVisualStyleBackColor = true;
+            this.lineMultiLockingBox.CheckedChanged += new System.EventHandler(this.lineMultiLockingBox_CheckedChanged);
+            // 
             // panel7
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel7.Controls.Add(this.minSelectDistanceBox);
             this.panel7.Controls.Add(this.label1);
-            this.panel7.Location = new System.Drawing.Point(3, 312);
+            this.panel7.Location = new System.Drawing.Point(3, 310);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(166, 27);
+            this.panel7.Size = new System.Drawing.Size(166, 28);
             this.panel7.TabIndex = 1;
             // 
             // minSelectDistanceBox
@@ -327,6 +373,18 @@
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(166, 48);
             this.panel8.TabIndex = 19;
+            // 
+            // btnConfirmCanvasLineAction
+            // 
+            this.btnConfirmCanvasLineAction.Enabled = false;
+            this.btnConfirmCanvasLineAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnConfirmCanvasLineAction.Location = new System.Drawing.Point(87, 19);
+            this.btnConfirmCanvasLineAction.Name = "btnConfirmCanvasLineAction";
+            this.btnConfirmCanvasLineAction.Size = new System.Drawing.Size(68, 23);
+            this.btnConfirmCanvasLineAction.TabIndex = 14;
+            this.btnConfirmCanvasLineAction.Text = "Confirm";
+            this.btnConfirmCanvasLineAction.UseVisualStyleBackColor = true;
+            this.btnConfirmCanvasLineAction.Click += new System.EventHandler(this.btnConfirmCanvasLineAction_Click);
             // 
             // btnCancelCanvasLineAction
             // 
@@ -369,7 +427,7 @@
             this.panel2.Controls.Add(this.btnDraw);
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.btnRemove);
-            this.panel2.Location = new System.Drawing.Point(3, 86);
+            this.panel2.Location = new System.Drawing.Point(3, 108);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(166, 55);
             this.panel2.TabIndex = 11;
@@ -434,7 +492,7 @@
             this.panel1.Controls.Add(this.y2Box);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(166, 81);
+            this.panel1.Size = new System.Drawing.Size(166, 99);
             this.panel1.TabIndex = 10;
             // 
             // lineKeyBox
@@ -456,7 +514,7 @@
             // selectedNodeLabel
             // 
             this.selectedNodeLabel.AutoSize = true;
-            this.selectedNodeLabel.Location = new System.Drawing.Point(67, 58);
+            this.selectedNodeLabel.Location = new System.Drawing.Point(3, 79);
             this.selectedNodeLabel.Name = "selectedNodeLabel";
             this.selectedNodeLabel.Size = new System.Drawing.Size(94, 13);
             this.selectedNodeLabel.TabIndex = 9;
@@ -533,15 +591,15 @@
             // linesTreeView
             // 
             this.linesTreeView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.linesTreeView.Location = new System.Drawing.Point(3, 143);
+            this.linesTreeView.Location = new System.Drawing.Point(3, 169);
             this.linesTreeView.Name = "linesTreeView";
-            treeNode6.Name = "Node0";
-            treeNode6.Tag = "main";
-            treeNode6.Text = "Main";
-            treeNode6.ToolTipText = "Root";
+            treeNode2.Name = "Node0";
+            treeNode2.Tag = "main";
+            treeNode2.Text = "Main";
+            treeNode2.ToolTipText = "Root";
             this.linesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6});
-            this.linesTreeView.Size = new System.Drawing.Size(166, 240);
+            treeNode2});
+            this.linesTreeView.Size = new System.Drawing.Size(166, 214);
             this.linesTreeView.TabIndex = 0;
             this.linesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.linesTreeView_AfterSelect);
             // 
@@ -555,29 +613,6 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(180, 413);
             this.tabControl1.TabIndex = 0;
-            // 
-            // radioBtnRemoveLineMode
-            // 
-            this.radioBtnRemoveLineMode.AutoSize = true;
-            this.radioBtnRemoveLineMode.Location = new System.Drawing.Point(3, 72);
-            this.radioBtnRemoveLineMode.Name = "radioBtnRemoveLineMode";
-            this.radioBtnRemoveLineMode.Size = new System.Drawing.Size(118, 17);
-            this.radioBtnRemoveLineMode.TabIndex = 18;
-            this.radioBtnRemoveLineMode.Text = "Remove Line Mode";
-            this.radioBtnRemoveLineMode.UseVisualStyleBackColor = true;
-            this.radioBtnRemoveLineMode.CheckedChanged += new System.EventHandler(this.radioBtnRemoveLineMode_CheckedChanged);
-            // 
-            // btnConfirmCanvasLineAction
-            // 
-            this.btnConfirmCanvasLineAction.Enabled = false;
-            this.btnConfirmCanvasLineAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConfirmCanvasLineAction.Location = new System.Drawing.Point(87, 19);
-            this.btnConfirmCanvasLineAction.Name = "btnConfirmCanvasLineAction";
-            this.btnConfirmCanvasLineAction.Size = new System.Drawing.Size(68, 23);
-            this.btnConfirmCanvasLineAction.TabIndex = 14;
-            this.btnConfirmCanvasLineAction.Text = "Confirm";
-            this.btnConfirmCanvasLineAction.UseVisualStyleBackColor = true;
-            this.btnConfirmCanvasLineAction.Click += new System.EventHandler(this.btnConfirmCanvasLineAction_Click);
             // 
             // MainWindow
             // 
@@ -601,6 +636,8 @@
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.tabCanvas.ResumeLayout(false);
+            this.panel9.ResumeLayout(false);
+            this.panel9.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minSelectDistanceBox)).EndInit();
@@ -660,9 +697,11 @@
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown minSelectDistanceBox;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.RadioButton radioBtnRemoveLineMode;
         private System.Windows.Forms.Button btnConfirmCanvasLineAction;
+        private System.Windows.Forms.CheckBox lineMultiLockingBox;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.Button button1;
     }
 }
 
