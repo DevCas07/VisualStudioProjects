@@ -234,8 +234,7 @@ static long ModInverse(long a, long m) //Reverse Modulo Function
     long m0 = m, y = 0, x = 1;
     if (m == 1) { return 0; }
     //Apply Extended Euclidean Algorithm
-    while (a > 1)
-    {
+    while (a > 1) {
         long q = a / m;
         long t = m;
 
@@ -278,8 +277,7 @@ Dictionary<string, (long, long)> generate_keys(int minPrime = 168, int maxPrime 
     //6
     long d = ModInverse(e, phi_n);
 
-    Dictionary<string, (long, long)> keys = new Dictionary<string, (long, long)>()
-    {
+    Dictionary<string, (long, long)> keys = new Dictionary<string, (long, long)>() {
         ["public-key"] = (e, n),
         ["private-key"] = (d, n)
     };
