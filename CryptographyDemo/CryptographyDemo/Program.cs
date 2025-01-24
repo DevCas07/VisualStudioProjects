@@ -1,7 +1,7 @@
-﻿using System.IO.MemoryMappedFiles;
+﻿using System.Data.SqlTypes;
+using System.IO.MemoryMappedFiles;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
 using System.Text;
 
 bool showInfoMessage = true;
@@ -26,6 +26,49 @@ string[] infoList = {
     "----------------------------"
 };
 
+string[] argumentStrings = new string[] { //Example Argument Array
+        "do",
+        "exit:true",
+        "msg:hello_world",
+        "number:1234"
+    };
+
+bool checkParameter(int index, string parameterId, out string outParameter, char seperator = ':') //Index specifies which argument in the argsArray is considered last argument before parameters
+{
+    outParameter = "";
+    if (index < 0 || index >= argumentStrings.Length) //Checks if index is out of range
+    {
+        throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range");
+    }
+
+    for (int i = index; i < argumentStrings.Length; i++)
+    {
+        string[] tempStr = argumentStrings[i].Split(seperator);
+        
+        if (tempStr.Length == 2 && parameterId.Equals(tempStr[0], StringComparison.OrdinalIgnoreCase))
+        {
+            outParameter = tempStr[1];
+            return true;
+        }
+    }
+    return false;
+}
+bool checkArgument(string argumentId, int index) //Index specifies which argument in the argsArray is considered last argument before parameters
+{
+    if (index < 0 || index >= argumentStrings.Length) //Checks if index is out of range
+    {
+        throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range");
+    }
+        
+    for (int i = index; i < argumentStrings.Length; i++)
+    {
+        if (argumentId.Equals(argumentStrings[i], StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+    }
+    return false;
+}
 long generate_prime_boolArray(long minPrimeRange = 100, long maxPrimeRange = 1000) //old
 {
     //string filePath = Directory.GetCurrentDirectory().ToString();
@@ -42,21 +85,27 @@ long generate_prime_boolArray(long minPrimeRange = 100, long maxPrimeRange = 100
 
     bool[] isPrime = new bool[maxPrimeRange + 1];
 
-    for (long i = 0; i <= maxPrimeRange; i++) {
+    for (long i = 0; i <= maxPrimeRange; i++)
+    {
         isPrime[i] = true;
     }
 
-    for (long p = 2; p <= maxPrimeRange; p = p + 2) {
-        if (isPrime[p]) {
-            for (long multiple = p * p; multiple <= maxPrimeRange; multiple += p) {
+    for (long p = 2; p <= maxPrimeRange; p = p + 2)
+    {
+        if (isPrime[p])
+        {
+            for (long multiple = p * p; multiple <= maxPrimeRange; multiple += p)
+            {
                 isPrime[multiple] = false;
             }
         }
     }
 
     List<long> primes = new List<long>();
-    for (long i = minPrimeRange; i <= maxPrimeRange; i++) {
-        if (isPrime[i]) {
+    for (long i = minPrimeRange; i <= maxPrimeRange; i++)
+    {
+        if (isPrime[i])
+        {
             primes.Add(i);
         }
     }
@@ -80,19 +129,24 @@ void generate_primes_MemoryMappedFile(string filePath, long limitRange = 300) //
 {
     using (MemoryMappedFile mmf = MemoryMappedFile.CreateNew("Primes", limitRange + 1))
     {
-        using (var accessor = mmf.CreateViewAccessor()) {
+        using (var accessor = mmf.CreateViewAccessor())
+        {
             //bool[] isPrime = new bool[limitRange + 1];
 
-            for (long i = 0; i <= limitRange; i++) { //Mark all positions as true
+            for (long i = 0; i <= limitRange; i++)
+            { //Mark all positions as true
                 accessor.Write(i, true);
                 //isPrime[i] = true;
             }
             accessor.Write(0, false);
             accessor.Write(1, false);
 
-            for (long p = 2; p <= limitRange; ) { //Sieves through which numbers are multiplies and therefore non primes
-                if (accessor.ReadBoolean(p) == true) {
-                    for (long multiple = p * p; multiple <= limitRange; multiple += p) {
+            for (long p = 2; p <= limitRange;)
+            { //Sieves through which numbers are multiplies and therefore non primes
+                if (accessor.ReadBoolean(p) == true)
+                {
+                    for (long multiple = p * p; multiple <= limitRange; multiple += p)
+                    {
                         accessor.Write(multiple, false);
                         //isPrime[multiple] = false;
                     }
@@ -104,11 +158,12 @@ void generate_primes_MemoryMappedFile(string filePath, long limitRange = 300) //
                 {
                     p = p + 1;
                     if (p >= limitRange) { break; }
-                }              
+                }
             }
 
             //Creates new file and fills it with primes from the MemoryMapped file
-            using (StreamWriter writer = new StreamWriter(filePath)) {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
                 long prime = 0;
                 for (long a = 0; a < limitRange; a++)
                 {
@@ -120,8 +175,10 @@ void generate_primes_MemoryMappedFile(string filePath, long limitRange = 300) //
 
                 writer.WriteLine(prime);
 
-                for (long i = 1; i < limitRange + 1; i++) {
-                    if (accessor.ReadBoolean(i) == true) {
+                for (long i = 1; i < limitRange + 1; i++)
+                {
+                    if (accessor.ReadBoolean(i) == true)
+                    {
                         writer.WriteLine(i.ToString());
                     }
                 }
@@ -177,7 +234,8 @@ static long ModInverse(long a, long m) //Reverse Modulo Function
     long m0 = m, y = 0, x = 1;
     if (m == 1) { return 0; }
     //Apply Extended Euclidean Algorithm
-    while (a > 1) {
+    while (a > 1)
+    {
         long q = a / m;
         long t = m;
 
@@ -194,7 +252,7 @@ static long ModInverse(long a, long m) //Reverse Modulo Function
     //Make x positive
     if (x < 0) { x += m0; }
     return x;
-    
+
 }
 Dictionary<string, (long, long)> generate_keys(int minPrime = 168, int maxPrime = 1230, long e = 65537) // int minPrime = 168, int maxPrime = 1230 //RSA Generation Algorithm, e is public exponent, d is private exponent
 {
@@ -202,7 +260,8 @@ Dictionary<string, (long, long)> generate_keys(int minPrime = 168, int maxPrime 
     long p = retrieveRandomPrime(minPrime, maxPrime);
     long q = retrieveRandomPrime(minPrime, maxPrime);
 
-    while (p == q) {
+    while (p == q)
+    {
         q = retrieveRandomPrime(minPrime, maxPrime);
     }
     //2
@@ -212,13 +271,15 @@ Dictionary<string, (long, long)> generate_keys(int minPrime = 168, int maxPrime 
     //4 
     //long e = 65537;
     //5
-    if (phi_n % e == 0) {
+    if (phi_n % e == 0)
+    {
         Console.WriteLine("e must be coprime");
     }
     //6
     long d = ModInverse(e, phi_n);
 
-    Dictionary<string, (long, long)> keys = new Dictionary<string, (long, long)>() {
+    Dictionary<string, (long, long)> keys = new Dictionary<string, (long, long)>()
+    {
         ["public-key"] = (e, n),
         ["private-key"] = (d, n)
     };
@@ -261,57 +322,71 @@ string decrypt(string ciphertext, long d, long n)
 void runArgs(string[] argsArray)
 {
     Random rand = new Random();
-        switch (argsArray[0]) //Initial argument
-        {
-            case "test":
-                Console.WriteLine("test");
-                break;
-            case "exit" or "close":
-                Environment.Exit(0);
-                break;
-            case "clear" or "cls":
-                Console.Clear();
-                break;
-            case "info":
-                foreach (var str in infoList) {
-                    Console.WriteLine(str); }
+    switch (argsArray[0]) //Initial argument
+    {
+        case "test":
+            Console.WriteLine("test");
             break;
-            case "generate":
-                if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
-                    else { switch (argsArray[1]) { //First subargument
-                        case "prime":
-                            if (argsArray.Length < (2 + 2)) { // '2' main arguments + '2' sub-subargument
-                                Console.WriteLine(retrieveRandomPrime()); }
-                            else {
-                                //--------------------------------------
-                                string[] strings = {
+        case "exit" or "close":
+            Environment.Exit(0);
+            break;
+        case "clear" or "cls":
+            Console.Clear();
+            break;
+        case "info":
+            foreach (var str in infoList)
+            {
+                Console.WriteLine(str);
+            }
+            break;
+        case "generate":
+            if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
+            else
+            {
+                switch (argsArray[1])
+                { //First subargument
+                    case "prime":
+                        if (argsArray.Length < (2 + 2))
+                        { // '2' main arguments + '2' sub-subargument
+                            Console.WriteLine(retrieveRandomPrime());
+                        }
+                        else
+                        {
+                            //--------------------------------------
+                            string[] strings = {
                                     argsArray[2], // minPrime
                                     argsArray[3], // maxPrime
                                 };
 
-                                long minPrime = 0;
-                                long maxPrime = 0;
+                            long minPrime = 0;
+                            long maxPrime = 0;
 
-                                foreach (var str in strings) {
-                                    string[] tempStr = str.Split(':');
+                            foreach (var str in strings)
+                            {
+                                string[] tempStr = str.Split(':');
 
-                                    switch (tempStr[0]) {
-                                        case "min" or "minPrime":
-                                            minPrime = long.Parse(tempStr[1]);
-                                            break;
-                                        case "max" or "maxPrime":
-                                            maxPrime = long.Parse(tempStr[1]);
-                                            break;
-                                    }
+                                switch (tempStr[0])
+                                {
+                                    case "min" or "minPrime":
+                                        minPrime = long.Parse(tempStr[1]);
+                                        break;
+                                    case "max" or "maxPrime":
+                                        maxPrime = long.Parse(tempStr[1]);
+                                        break;
                                 }
-                                //--------------------------------------
+                            }
+                            //--------------------------------------
 
-                                Console.WriteLine(retrieveRandomPrime((int)minPrime, (int)maxPrime)); }
-                            break;
-                        case "key-pair":
-                            if (argsArray.Length < (2 + 3)) { // '2' main arguments + '3' sub-subargument
-                                keys = generate_keys(); }
-                            else {
+                            Console.WriteLine(retrieveRandomPrime((int)minPrime, (int)maxPrime));
+                        }
+                        break;
+                    case "key-pair":
+                        if (argsArray.Length < (2 + 3))
+                        { // '2' main arguments + '3' sub-subargument
+                            keys = generate_keys();
+                        }
+                        else
+                        {
 
                             //--------------------------------------
                             string[] strings = {
@@ -324,10 +399,12 @@ void runArgs(string[] argsArray)
                             long maxPrime = 0;
                             long e = 0;
 
-                            foreach (var str in strings){
+                            foreach (var str in strings)
+                            {
                                 string[] tempStr = str.Split(':');
 
-                                switch (tempStr[0]){
+                                switch (tempStr[0])
+                                {
                                     case "minPrime":
                                         minPrime = long.Parse(tempStr[1]);
                                         break;
@@ -342,62 +419,71 @@ void runArgs(string[] argsArray)
 
                             //--------------------------------------
 
-                            keys = generate_keys((int)minPrime, (int)maxPrime, (int)e); }
-                            Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
-                            Console.WriteLine($"Private-key: {keys["private-key"]} : ('d', 'n')");
-                            break;
-                        case "new-prime-file" or "primes":
-                            if (argsArray.Length < (2 + 1))
-                            { // '2' main arguments + '1' sub-subargument
-                                generate_primes_MemoryMappedFile(filePrimesPath);
-                                Console.WriteLine("Generated new prime file");
-                            }
-                            else {
-                                long maxPrimeRange = 0;
-                                string[] tempStr = argsArray[2].Split(':');
-                                switch (tempStr[0]) {
-                                    case "limitRange" or "limitPrimeRange" or "range":
-                                        if (File.Exists(filePrimesPath)) {
-                                            File.Delete(filePrimesPath);
-                                        }
-                                        maxPrimeRange = long.Parse(tempStr[1]);
-                                        generate_primes_MemoryMappedFile(filePrimesPath, maxPrimeRange);
-
-                                        Console.WriteLine($"Generated new prime file, limitRange:{tempStr[1]}");
-                                    break;
-                                }
-                            }
+                            keys = generate_keys((int)minPrime, (int)maxPrime, (int)e);
+                        }
+                        Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
+                        Console.WriteLine($"Private-key: {keys["private-key"]} : ('d', 'n')");
                         break;
-                } 
-                    }
-                break;
-            
-            case "encrypt": //Maybe remake so the order of parameters isn't hardcoded and can be dynamic ------------------------------------------------
-                if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
-                    else { switch (argsArray[1]) { //First subargument
-                        case "get-vars" or "get":
-                            if (argsArray.Length > 2) // '2' main arguments
-                                { Console.WriteLine("Invalid amount of arguments"); break; }
-                            else {
-                                var watch = System.Diagnostics.Stopwatch.StartNew();
+                    case "new-prime-file" or "primes":
+                        if (argsArray.Length < (2 + 1))
+                        { // '2' main arguments + '1' sub-subargument
+                            generate_primes_MemoryMappedFile(filePrimesPath);
+                            Console.WriteLine("Generated new prime file");
+                        }
+                        else
+                        {
+                            long maxPrimeRange = 0;
+                            string[] tempStr = argsArray[2].Split(':');
+                            switch (tempStr[0])
+                            {
+                                case "limitRange" or "limitPrimeRange" or "range":
+                                    if (File.Exists(filePrimesPath))
+                                    {
+                                        File.Delete(filePrimesPath);
+                                    }
+                                    maxPrimeRange = long.Parse(tempStr[1]);
+                                    generate_primes_MemoryMappedFile(filePrimesPath, maxPrimeRange);
 
-                                Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
-                                ciphertext = encrypt(plaintext, keys["public-key"].Item1, keys["public-key"].Item2);
-                                Console.WriteLine($" Encrypted ciphertext: {ciphertext}");
-
-                                var completion_time = watch.ElapsedMilliseconds;
-                                Console.WriteLine($"Completed in {completion_time} ms");
+                                    Console.WriteLine($"Generated new prime file, limitRange:{tempStr[1]}");
+                                    break;
                             }
-                            break;
-                        case "set-parameters" or "set":
-                            if (argsArray.Length < (2 + 3)) // '2' main arguments + '3' sub-subparameters
-                                { Console.WriteLine("Missing parameters"); break; }
-                            else if (argsArray.Length > (2 + 3)) //To many arguments
-                                { Console.WriteLine("To many subarguments"); break; }
-                            else {
+                        }
+                        break;
+                }
+            }
+            break;
+
+        case "encrypt": //Maybe remake so the order of parameters isn't hardcoded and can be dynamic ------------------------------------------------
+            if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
+            else
+            {
+                switch (argsArray[1])
+                { //First subargument
+                    case "get-vars" or "get":
+                        if (argsArray.Length > 2) // '2' main arguments
+                        { Console.WriteLine("Invalid amount of arguments"); break; }
+                        else
+                        {
+                            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                            Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
+                            ciphertext = encrypt(plaintext, keys["public-key"].Item1, keys["public-key"].Item2);
+                            Console.WriteLine($" Encrypted ciphertext: {ciphertext}");
+
+                            var completion_time = watch.ElapsedMilliseconds;
+                            Console.WriteLine($"Completed in {completion_time} ms");
+                        }
+                        break;
+                    case "set-parameters" or "set":
+                        if (argsArray.Length < (2 + 3)) // '2' main arguments + '3' sub-subparameters
+                        { Console.WriteLine("Missing parameters"); break; }
+                        else if (argsArray.Length > (2 + 3)) //To many arguments
+                        { Console.WriteLine("To many subarguments"); break; }
+                        else
+                        {
 
                             //--------------------------------------
-                            string[] strings = { 
+                            string[] strings = {
                                 argsArray[2], // e public exponent
                                 argsArray[3], //n modulus
                                 argsArray[4] // plaintext
@@ -407,10 +493,12 @@ void runArgs(string[] argsArray)
                             long n = 0;
                             string plaintext = "";
 
-                            foreach (var str in strings) {
+                            foreach (var str in strings)
+                            {
                                 string[] tempStr = str.Split(':');
 
-                                switch (tempStr[0]) {
+                                switch (tempStr[0])
+                                {
                                     case "e-exp" or "e":
                                         e = long.Parse(tempStr[1]);
                                         break;
@@ -431,58 +519,73 @@ void runArgs(string[] argsArray)
 
                             var completion_time2 = watch2.ElapsedMilliseconds;
                             Console.WriteLine($"Completed in {completion_time2} ms");
-                            }
-                            break;
-                        } 
-                    }
-                break;
-            case "decrypt":
-                if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
-                    else { switch (argsArray[1]) { //First subargument
-                        case "prime":
-                            if (argsArray.Length < (2 + 2)) { // '2' main arguments + '2' sub-subargument
-                                Console.WriteLine(retrieveRandomPrime()); }
-                            else { Console.WriteLine(retrieveRandomPrime((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]))); }
-                            break;
-                        case "key-pair":
-                            if (argsArray.Length < (2 + 3)) { // '2' main arguments + '3' sub-subargument
-                                keys = generate_keys(); }
-                            else { keys = generate_keys((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]), long.Parse(argsArray[4])); }
-                            Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
-                            Console.WriteLine($"Private-key: {keys["private-key"]} : ('d', 'n')");
-                            break;
-                        } 
-                    }
-                break;
-            case "vars":
-                if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
-                    else { switch (argsArray[1]) { //First subargument
-                        case "get":
-                            if (argsArray.Length < (2 + 2)) { // '2' main arguments + '2' sub-subargument
-                                Console.WriteLine(retrieveRandomPrime()); }
-                            else { Console.WriteLine(retrieveRandomPrime((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]))); }
-                            break;
-                        case "set":
-                            if (argsArray.Length < (2 + 3)) { // '2' main arguments + '3' sub-subargument
-                                keys = generate_keys(); }
-                            else { keys = generate_keys((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]), long.Parse(argsArray[4])); }
-                            Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
-                            Console.WriteLine($"Private-key: {keys["private-key"]} : ('d', 'n')");
-                            break;
-                        } 
-                    }
-                break;
-            default:
-                break;
-        }
+                        }
+                        break;
+                }
+            }
+            break;
+        case "decrypt":
+            if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
+            else
+            {
+                switch (argsArray[1])
+                { //First subargument
+                    case "prime":
+                        if (argsArray.Length < (2 + 2))
+                        { // '2' main arguments + '2' sub-subargument
+                            Console.WriteLine(retrieveRandomPrime());
+                        }
+                        else { Console.WriteLine(retrieveRandomPrime((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]))); }
+                        break;
+                    case "key-pair":
+                        if (argsArray.Length < (2 + 3))
+                        { // '2' main arguments + '3' sub-subargument
+                            keys = generate_keys();
+                        }
+                        else { keys = generate_keys((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]), long.Parse(argsArray[4])); }
+                        Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
+                        Console.WriteLine($"Private-key: {keys["private-key"]} : ('d', 'n')");
+                        break;
+                }
+            }
+            break;
+        case "vars":
+            if (argsArray.Length == 1) { Console.WriteLine("Subarguments needed"); break; }
+            else
+            {
+                switch (argsArray[1])
+                { //First subargument
+                    case "get":
+                        if (argsArray.Length < (2 + 2))
+                        { // '2' main arguments + '2' sub-subargument
+                            Console.WriteLine(retrieveRandomPrime());
+                        }
+                        else { Console.WriteLine(retrieveRandomPrime((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]))); }
+                        break;
+                    case "set":
+                        if (argsArray.Length < (2 + 3))
+                        { // '2' main arguments + '3' sub-subargument
+                            keys = generate_keys();
+                        }
+                        else { keys = generate_keys((int)long.Parse(argsArray[2]), (int)long.Parse(argsArray[3]), long.Parse(argsArray[4])); }
+                        Console.WriteLine($"Public-key: {keys["public-key"]} : ('e', 'n') ");
+                        Console.WriteLine($"Private-key: {keys["private-key"]} : ('d', 'n')");
+                        break;
+                }
+            }
+            break;
+        default:
+            break;
+    }
 
 }
 
 while (true) //Main Loop
+{
+    if (showInfoMessage == true)
     {
-    if (showInfoMessage == true) {
         Console.WriteLine("Type 'info' to list all available commands");
-        showInfoMessage = false; 
+        showInfoMessage = false;
     }
 
     Console.Write("> ");
@@ -493,13 +596,14 @@ while (true) //Main Loop
     {
         string[] argsArray = argStr.Split(' ');
         runArgs(argsArray);
-        
+
         //Console.WriteLine(argsArray.Length);
         //foreach (var arg in argsArray)
         //{
         //    Console.WriteLine(arg);
         //}
-    } else { continue; }
+    }
+    else { continue; }
 }
 
 
