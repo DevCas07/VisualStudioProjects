@@ -3,6 +3,7 @@ using System.IO.MemoryMappedFiles;
 using System.Numerics;
 using System.Reflection.Metadata;
 using System.Text;
+using CommandLineInterpreterLibrary;
 
 bool showInfoMessage = true;
 Dictionary<string, (long, long)> keys = new Dictionary<string, (long, long)>();
@@ -33,7 +34,7 @@ string[] argumentStrings = new string[] { //Example Argument Array
         "number:1234"
     };
 
-bool checkParameter(int index, string parameterId, out string outParameter, char seperator = ':') //Index specifies which argument in the argsArray is considered last argument before parameters
+bool checkParameter(string parameterId, int index, out string outParameter, char seperator = ':') //Index specifies which argument in the argsArray is considered last argument before parameters
 {
     outParameter = "";
     if (index < 0 || index >= argumentStrings.Length) //Checks if index is out of range
@@ -53,7 +54,7 @@ bool checkParameter(int index, string parameterId, out string outParameter, char
     }
     return false;
 }
-bool checkArgument(string argumentId, int index) //Index specifies which argument in the argsArray is considered last argument before parameters
+bool checkArgument(string argumentId, int index) //Index specifies which argument in the argsArray is considered last argument before parameters, Maybe add int amountRequiredParameters
 {
     if (index < 0 || index >= argumentStrings.Length) //Checks if index is out of range
     {
@@ -578,31 +579,66 @@ void runArgs(string[] argsArray)
 
 }
 
+Interpreter interpreter = new Interpreter();
+interpreter.interpreterCharacter = '>';
+
 while (true) //Main Loop
 {
-    if (showInfoMessage == true)
+    interpreter.RunInterpreter();
+
+    if (interpreter.checkArgument("write", true))
     {
-        Console.WriteLine("Type 'info' to list all available commands");
-        showInfoMessage = false;
+        if (interpreter.checkArgument("default"))
+        {
+            Console.WriteLine("Hello world!");
+        }
+        else if (interpreter.checkArgument("custom"))
+        {
+            //interpreter.InitialiseRequiredParameters(["a", "b"], 2); //Initialises any required parameters
+
+            interpreter.checkParameter("a", out string temp1);
+            interpreter.checkParameter("b", out string temp2);
+
+            Console.WriteLine($"A={temp1}, B={temp2}");
+        }
+        else { Console.WriteLine("Unkown command"); }
     }
-
-    Console.Write("> ");
-    string argStr = "";
-    argStr = Console.ReadLine().ToString();
-
-    if (!string.IsNullOrEmpty(argStr))
+    else if (interpreter.checkArgument("test"))
     {
-        string[] argsArray = argStr.Split(' ');
-        runArgs(argsArray);
-
-        //Console.WriteLine(argsArray.Length);
-        //foreach (var arg in argsArray)
-        //{
-        //    Console.WriteLine(arg);
-        //}
+        Console.WriteLine("test succeded");
     }
-    else { continue; }
+    else if (interpreter.checkArgument("exit"))
+    {
+        Environment.Exit(0);
+    }
+    else if (interpreter.checkArgument("cls"))
+    {
+        Console.Clear();
+    }
+    else { Console.WriteLine("Unkown command"); }
+
+    //if (showInfoMessage == true)
+    //{
+    //    Console.WriteLine("Type 'info' to list all available commands");
+    //  showInfoMessage = false;
+    //}
+
+    //Console.Write("> ");
+    //string argStr = "";
+    //argStr = Console.ReadLine().ToString();
+    //
+    //if (!string.IsNullOrEmpty(argStr))
+    //{
+    //string[] argsArray = argStr.Split(' ');
+
+    //runArgs(argsArray);
+
+    //Console.WriteLine(argsArray.Length);
+    //foreach (var arg in argsArray)
+    //{
+    //    Console.WriteLine(arg);
+    //}
+    //}
+    //else { continue; }
+
 }
-
-
-
