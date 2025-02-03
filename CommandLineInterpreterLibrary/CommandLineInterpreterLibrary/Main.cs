@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace CommandLineInterpreterLibrary
 {
@@ -105,35 +106,38 @@ namespace CommandLineInterpreterLibrary
             }
         }
         
-        public bool checkArgument(string argumentId, bool requireArguments = false) //Index specifies which argument in the argsArray is considered last argument before parameters
+        public bool checkArgument(string argumentId, bool requireArguments) //Index specifies which argument in the argsArray is considered last argument before parameters
         {
-            bool argument = false;
+            //Console.WriteLine(argumentId);
             //Add system that checks if amount of argument is to few or to many -------------------------------------------
             if (index < 0 || index > argumentStrings.Length) { //Checks if index is out of range
                 Console.WriteLine("Index is out of range");
                 throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range");
             }
+            //Console.WriteLine($"argumentid: {argumentId}");
+            //Console.WriteLine($"argumentid: {requireArguments}");
 
             for (int i = index; i < argumentStrings.Length; i++) {
                 if (argumentId.Equals(argumentStrings[i], StringComparison.OrdinalIgnoreCase)) {
                     index = i + 1;
                     return true;
                 }
-                if (requireArguments == true && (argumentStrings.Length - index) < 2) { //If diffrence is below below it returns true, if not it retuns false, number analysis has been made to determine the formula
-                    Console.WriteLine("To few arguments");
-                    return false;
+                else if (requireArguments == true && (argumentStrings.Length - index) < 2) { //If diffrence is below below it returns true, if not it retuns false, number analysis has been made to determine the formula
+                    //Console.WriteLine("To few arguments");
                     //throw new Exception("To few arguments");
+                    return false;
                 }
             }
             return false;
         }
         internal void resetArguments()
         {
-            requireParameters = false;
-            parameterIndex = 0;
-            requiredParameters.Clear();
-            totalParameterAmount = 0;
-            index = 0; 
+            //requireParameters = false;
+            //parameterIndex = 0;
+            //requiredParameters.Clear();
+            //totalParameterAmount = 0;
+            index = 0;
+            isFirstParameter = true;
         }
         public void InitialiseRequiredParameters(string[] requiredParameterIds, int totParameterAmount) //Maybe add a default value funtionality
         {
