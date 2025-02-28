@@ -66,9 +66,14 @@ namespace LineDrawerDemo
             public int Realy1 { get; set; }
             public int Realx2 { get; set; }
             public int Realy2 { get; set; }
+            
 
         }
 
+        class LineHandling
+        {
+
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -214,6 +219,7 @@ namespace LineDrawerDemo
         //
         // Basic/Advanced line functions handling ------------------------------------------
         //
+
         public void InitializeLineObject(int key, int StartPosX, int StartPosY, int EndPosX, int EndPosY) //Creates new line and adds it onto the dictionary, --fixes new line's x and y coordinates to duplicates--
         {
             LineObjects.Add(key, new LineObject
@@ -246,11 +252,32 @@ namespace LineDrawerDemo
         public void removeLineByDialog(int key, out bool success)
         {
             success = false;
-            var dialog = MessageBox.Show("Remove line:" + selectedNode, "Confirm remove", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var dialog = MessageBox.Show("Remove line:" + selectedNode, "Confirm removal", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
             if (dialog == DialogResult.OK)
             {
                 removeLine(key);
+                success = true;
+            }
+        }
+        public void removeLinesByDialog(List<int> lines, out bool success)
+        {
+            success = false;
+            
+            StringBuilder stringIds = new StringBuilder(); //Add ids of all selected lines marked for removal
+            foreach (var line in lines)
+            {
+                stringIds.AppendLine($"line:{line}");
+            }
+
+            var dialog = MessageBox.Show("Remove lines\n" + stringIds, "Confirm removal", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            
+            if (dialog == DialogResult.OK)
+            {
+                foreach (var line in lines)
+                {
+                    removeLine(line); //line = key
+                }
                 success = true;
             }
         }
@@ -554,7 +581,7 @@ namespace LineDrawerDemo
             numClicks = 0;
             selectedLinesTreeView.Nodes[0].Nodes.Clear();
             selectedLineObjects.Clear();
-            selectedPointPos = new Point(0, 0);
+            selectedPointPos = new Point(-20, -20);
             
             selectedNodeLabel.Text = "Selected node: [None]";
             selectedNodeLabel2.Text = "Selected node: [None]";
@@ -630,12 +657,12 @@ namespace LineDrawerDemo
                     TreeNode node = new TreeNode();
                     node.Tag = line.Key;
 
-                    if (canvasLineMode == "edit") // line edit mode
+                    if (canvasLineMode == "editLine") // line edit mode
                     {
                         node.Text = "Line" + line.Key.ToString() + ", End:" + line.Value;
                         node.Name = "line:" + line.Key.ToString() + ";end:" + line.Value;
                     }
-                    else if (canvasLineMode == "remove") // line remove mode
+                    else if (canvasLineMode == "removeLine") // line remove mode
                     {
                         node.Text = "Line" + line.Key.ToString();
                         node.Name = "line:" + line.Key.ToString();
@@ -776,7 +803,7 @@ namespace LineDrawerDemo
                     if (LineObjects[selectedNode].Realx2 != 0) { x2Box.Text = LineObjects[selectedNode].Realx2.ToString(); }
                     if (LineObjects[selectedNode].Realy2 != 0) { y2Box.Text = LineObjects[selectedNode].Realy2.ToString(); }
 
-                    if (canvasLineMode == "edit" || canvasLineMode == "create") // line edit mode
+                    if (canvasLineMode == "editLine" || canvasLineMode == "createLine") // line edit mode
                     {
                         if (lineMultiLocking == false)
                         {
@@ -785,14 +812,14 @@ namespace LineDrawerDemo
                             selectedPointPos = new Point(endPoint[0], endPoint[1]);
                             //Switch with comments to these code bits to require confirm button press, maybe add an if statement here for a public option varible
                             numClicks = 1;
-                            //btnConfirmCanvasLineAction.Enabled = true;
+                            btnConfirmCanvasLineAction.Enabled = true;
                         }
                         //else if (lineMultiLocking == true)
                         //{
 
                         //}
                     }
-                    else if (canvasLineMode == "remove")
+                    else if (canvasLineMode == "removeLine")
                     {
                         btnConfirmCanvasLineAction.Enabled = true;
                     }
@@ -980,7 +1007,7 @@ namespace LineDrawerDemo
                                 linesDraw();
 
                             }
-                            else //Executes if no nearby line is found, if lines <= 0 or if LoxkIntoLineEnds == false
+                            else //Executes if no nearby line is found, if lines <= 0 or if LockIntoLineEnds == false
                             {
                                 if (lineMultiLocking == false) //No MultiLineLocking
                                 {
@@ -1088,7 +1115,7 @@ namespace LineDrawerDemo
                         radiusPolygon = (int)Math.Sqrt(
                             Math.Pow((tempMouseEndPos.X - tempMouseStartPos.X), 2) + 
                             Math.Pow((tempMouseEndPos.Y - tempMouseStartPos.Y), 2));
-                        double angleExtension = 0; //Implement way to get what angle the mouse is to make the polygon rotated appropriate
+                        double angleExtension = ((180 * Math.Atan2(tempMouseEndPos.X, tempMouseEndPos.Y))/ Math.PI); //Implement way to get what angle the mouse is to make the polygon rotated appropriate
 
                         Dictionary<int, (Point, Point)> polygonLines = createPolygonLines(tempMouseStartPos.X, tempMouseStartPos.Y, numPolygonCorners, radiusPolygon, angleExtension);
                         InitialisePolygon(polygonLines);
@@ -1096,6 +1123,7 @@ namespace LineDrawerDemo
                         selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                         linesDraw();
                         updateLineTreeView();
+                        numClicks = 0;
                     }
                 }
                 //resetSelectedLine();
@@ -1107,6 +1135,7 @@ namespace LineDrawerDemo
         //
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            
             //InitializeLineObject(10, 20, 120, 80);
             //BeginGraphics();
         }
@@ -1216,6 +1245,86 @@ namespace LineDrawerDemo
         private void button1_Click_1(object sender, EventArgs e)
         {
             setCanvasMode("createPolygon");
+        }
+
+        private void toolStripMenuItemForceRedraw_Click(object sender, EventArgs e)
+        {
+            linesDraw();
+        }
+
+        private void createLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            setCanvasMode("createLine");
+        }
+
+        private void editLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            setCanvasMode("editLine");
+        }
+
+        private void removeLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            setCanvasMode("removeLine");
+        }
+
+        private void createPolygonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            setCanvasMode("createPolygon");
+        }
+
+        private void enableToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            DebugMode = true;
+            linesDraw();
+        }
+
+        private void disableToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            DebugMode = false;
+            linesDraw();
+        }
+
+        private void enableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lockInToLineEnds = true;
+        }
+
+        private void disableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lockInToLineEnds = false;
+        }
+
+        private void enableToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            lineMultiLocking = true;
+            
+        }
+
+        private void disableToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            lineMultiLocking = false;
+        }
+
+        private void radioBtnCreatePolygonMode_CheckedChanged(object sender, EventArgs e)
+        {
+            setCanvasMode("createPolygon");
+        }
+
+        private void numPolygonCornersBox_ValueChanged(object sender, EventArgs e)
+        {
+            numPolygonCorners = (int)numPolygonCornersBox.Value;
+        }
+
+        private void resetCanvasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<int> lines = new List<int>();
+            foreach (var line in LineObjects.Keys)
+            {
+                lines.Add(line);
+            }
+
+            bool tempSuccess = false;
+            removeLinesByDialog(lines, out tempSuccess);
         }
     }
 }
