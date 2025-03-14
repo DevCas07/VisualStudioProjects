@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CryptographyDemo": {
+      "commandName": "Project",
+      "sqlDebugging": true
+    }
+  }
+}

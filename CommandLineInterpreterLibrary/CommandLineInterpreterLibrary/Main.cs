@@ -139,7 +139,7 @@ namespace CommandLineInterpreterLibrary
             index = 0;
             isFirstParameter = true;
         }
-        public void InitialiseRequiredParameters(string[] requiredParameterIds, int totParameterAmount) //Maybe add a default value funtionality
+        internal void InitialiseRequiredParameters(string[] requiredParameterIds, int totParameterAmount) //Maybe add a default value funtionality
         {
             requireParameters = true;
             totalParameterAmount = totParameterAmount;

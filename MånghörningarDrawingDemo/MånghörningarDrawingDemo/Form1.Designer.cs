@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Main");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Main");
             this.CanvasBox = new System.Windows.Forms.PictureBox();
             this.pointsTreeView = new System.Windows.Forms.TreeView();
+            this.linesTreeView = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,11 +58,24 @@
             this.pointsTreeView.Size = new System.Drawing.Size(174, 337);
             this.pointsTreeView.TabIndex = 1;
             // 
+            // linesTreeView
+            // 
+            this.linesTreeView.Location = new System.Drawing.Point(558, 12);
+            this.linesTreeView.Name = "linesTreeView";
+            treeNode2.Name = "Node0";
+            treeNode2.Tag = "main";
+            treeNode2.Text = "Main";
+            this.linesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode2});
+            this.linesTreeView.Size = new System.Drawing.Size(174, 337);
+            this.linesTreeView.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(564, 361);
+            this.ClientSize = new System.Drawing.Size(744, 361);
+            this.Controls.Add(this.linesTreeView);
             this.Controls.Add(this.pointsTreeView);
             this.Controls.Add(this.CanvasBox);
             this.Name = "Form1";
@@ -75,6 +90,7 @@
 
         private System.Windows.Forms.PictureBox CanvasBox;
         private System.Windows.Forms.TreeView pointsTreeView;
+        private System.Windows.Forms.TreeView linesTreeView;
     }
 }
 

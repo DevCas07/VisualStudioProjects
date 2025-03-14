@@ -53,6 +53,8 @@
             this.lineMultiLockingBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel9 = new System.Windows.Forms.Panel();
+            this.numPolygonCornersBox = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.btnConfirmCanvasLineAction = new System.Windows.Forms.Button();
             this.btnCancelCanvasLineAction = new System.Windows.Forms.Button();
@@ -81,7 +83,10 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.reloadFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.showExceptionLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.canvasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemForceRedraw = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -101,10 +106,8 @@
             this.enableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.disableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.Canvas = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.numPolygonCornersBox = new System.Windows.Forms.NumericUpDown();
             this.resetCanvasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Canvas = new System.Windows.Forms.PictureBox();
             this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabFile.SuspendLayout();
@@ -114,6 +117,7 @@
             this.panel10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minSelectDistanceBox)).BeginInit();
             this.panel9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPolygonCornersBox)).BeginInit();
             this.panel8.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -122,7 +126,6 @@
             this.tabControl1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPolygonCornersBox)).BeginInit();
             this.SuspendLayout();
             // 
             // panel5
@@ -380,6 +383,29 @@
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(166, 200);
             this.panel9.TabIndex = 21;
+            // 
+            // numPolygonCornersBox
+            // 
+            this.numPolygonCornersBox.Location = new System.Drawing.Point(106, 3);
+            this.numPolygonCornersBox.Name = "numPolygonCornersBox";
+            this.numPolygonCornersBox.Size = new System.Drawing.Size(44, 20);
+            this.numPolygonCornersBox.TabIndex = 21;
+            this.numPolygonCornersBox.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numPolygonCornersBox.ValueChanged += new System.EventHandler(this.numPolygonCornersBox_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 5);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(107, 13);
+            this.label2.TabIndex = 21;
+            this.label2.Tag = "";
+            this.label2.Text = "numPolygonCorners: ";
             // 
             // panel8
             // 
@@ -649,7 +675,10 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveFileToolStripMenuItem,
             this.openFileToolStripMenuItem,
-            this.reloadFileToolStripMenuItem});
+            this.toolStripSeparator4,
+            this.reloadFileToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.showExceptionLogToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -657,20 +686,37 @@
             // saveFileToolStripMenuItem
             // 
             this.saveFileToolStripMenuItem.Name = "saveFileToolStripMenuItem";
-            this.saveFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.saveFileToolStripMenuItem.Text = "Save File";
             // 
             // openFileToolStripMenuItem
             // 
             this.openFileToolStripMenuItem.Name = "openFileToolStripMenuItem";
-            this.openFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.openFileToolStripMenuItem.Text = "Open File";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(178, 6);
             // 
             // reloadFileToolStripMenuItem
             // 
             this.reloadFileToolStripMenuItem.Name = "reloadFileToolStripMenuItem";
-            this.reloadFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reloadFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.reloadFileToolStripMenuItem.Text = "Reload File";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(178, 6);
+            // 
+            // showExceptionLogToolStripMenuItem
+            // 
+            this.showExceptionLogToolStripMenuItem.Name = "showExceptionLogToolStripMenuItem";
+            this.showExceptionLogToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.showExceptionLogToolStripMenuItem.Text = "Show Exception Log";
+            this.showExceptionLogToolStripMenuItem.Click += new System.EventHandler(this.showExceptionLogToolStripMenuItem_Click);
             // 
             // canvasToolStripMenuItem
             // 
@@ -691,14 +737,14 @@
             // toolStripMenuItemForceRedraw
             // 
             this.toolStripMenuItemForceRedraw.Name = "toolStripMenuItemForceRedraw";
-            this.toolStripMenuItemForceRedraw.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemForceRedraw.Size = new System.Drawing.Size(176, 22);
             this.toolStripMenuItemForceRedraw.Text = "Force Redraw";
             this.toolStripMenuItemForceRedraw.Click += new System.EventHandler(this.toolStripMenuItemForceRedraw_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
             // 
             // debugModeToolStripMenuItem
             // 
@@ -706,7 +752,7 @@
             this.enableToolStripMenuItem2,
             this.disableToolStripMenuItem2});
             this.debugModeToolStripMenuItem.Name = "debugModeToolStripMenuItem";
-            this.debugModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.debugModeToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.debugModeToolStripMenuItem.Text = "Debug Mode";
             // 
             // enableToolStripMenuItem2
@@ -726,7 +772,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
             // 
             // lineModeToolStripMenuItem
             // 
@@ -736,34 +782,34 @@
             this.removeLineToolStripMenuItem,
             this.createPolygonToolStripMenuItem});
             this.lineModeToolStripMenuItem.Name = "lineModeToolStripMenuItem";
-            this.lineModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lineModeToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.lineModeToolStripMenuItem.Text = "Line Mode";
             // 
             // createLineToolStripMenuItem
             // 
             this.createLineToolStripMenuItem.Name = "createLineToolStripMenuItem";
-            this.createLineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createLineToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.createLineToolStripMenuItem.Text = "Create Line";
             this.createLineToolStripMenuItem.Click += new System.EventHandler(this.createLineToolStripMenuItem_Click);
             // 
             // editLineToolStripMenuItem
             // 
             this.editLineToolStripMenuItem.Name = "editLineToolStripMenuItem";
-            this.editLineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editLineToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.editLineToolStripMenuItem.Text = "Edit Line";
             this.editLineToolStripMenuItem.Click += new System.EventHandler(this.editLineToolStripMenuItem_Click);
             // 
             // removeLineToolStripMenuItem
             // 
             this.removeLineToolStripMenuItem.Name = "removeLineToolStripMenuItem";
-            this.removeLineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeLineToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.removeLineToolStripMenuItem.Text = "Remove Line";
             this.removeLineToolStripMenuItem.Click += new System.EventHandler(this.removeLineToolStripMenuItem_Click);
             // 
             // createPolygonToolStripMenuItem
             // 
             this.createPolygonToolStripMenuItem.Name = "createPolygonToolStripMenuItem";
-            this.createPolygonToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createPolygonToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.createPolygonToolStripMenuItem.Text = "Create Polygon";
             this.createPolygonToolStripMenuItem.Click += new System.EventHandler(this.createPolygonToolStripMenuItem_Click);
             // 
@@ -773,20 +819,20 @@
             this.enableToolStripMenuItem,
             this.disableToolStripMenuItem});
             this.lockIntoLineEndsToolStripMenuItem.Name = "lockIntoLineEndsToolStripMenuItem";
-            this.lockIntoLineEndsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lockIntoLineEndsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.lockIntoLineEndsToolStripMenuItem.Text = "Lock Into Line Ends";
             // 
             // enableToolStripMenuItem
             // 
             this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
-            this.enableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.enableToolStripMenuItem.Text = "Enable";
             this.enableToolStripMenuItem.Click += new System.EventHandler(this.enableToolStripMenuItem_Click);
             // 
             // disableToolStripMenuItem
             // 
             this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
-            this.disableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.disableToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.disableToolStripMenuItem.Text = "Disable";
             this.disableToolStripMenuItem.Click += new System.EventHandler(this.disableToolStripMenuItem_Click);
             // 
@@ -796,27 +842,34 @@
             this.enableToolStripMenuItem1,
             this.disableToolStripMenuItem1});
             this.multiLineLockingToolStripMenuItem.Name = "multiLineLockingToolStripMenuItem";
-            this.multiLineLockingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.multiLineLockingToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.multiLineLockingToolStripMenuItem.Text = "Multi Line Locking";
             // 
             // enableToolStripMenuItem1
             // 
             this.enableToolStripMenuItem1.Name = "enableToolStripMenuItem1";
-            this.enableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.enableToolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
             this.enableToolStripMenuItem1.Text = "Enable";
             this.enableToolStripMenuItem1.Click += new System.EventHandler(this.enableToolStripMenuItem1_Click);
             // 
             // disableToolStripMenuItem1
             // 
             this.disableToolStripMenuItem1.Name = "disableToolStripMenuItem1";
-            this.disableToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.disableToolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
             this.disableToolStripMenuItem1.Text = "Disable";
             this.disableToolStripMenuItem1.Click += new System.EventHandler(this.disableToolStripMenuItem1_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(173, 6);
+            // 
+            // resetCanvasToolStripMenuItem
+            // 
+            this.resetCanvasToolStripMenuItem.Name = "resetCanvasToolStripMenuItem";
+            this.resetCanvasToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.resetCanvasToolStripMenuItem.Text = "Reset Canvas";
+            this.resetCanvasToolStripMenuItem.Click += new System.EventHandler(this.resetCanvasToolStripMenuItem_Click);
             // 
             // Canvas
             // 
@@ -830,38 +883,9 @@
             this.Canvas.Size = new System.Drawing.Size(678, 388);
             this.Canvas.TabIndex = 0;
             this.Canvas.TabStop = false;
+            this.Canvas.SizeChanged += new System.EventHandler(this.Canvas_SizeChanged);
             this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
             this.Canvas.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 5);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(98, 13);
-            this.label2.TabIndex = 21;
-            this.label2.Tag = "";
-            this.label2.Text = "minSelectDistance:";
-            // 
-            // numPolygonCornersBox
-            // 
-            this.numPolygonCornersBox.Location = new System.Drawing.Point(100, 2);
-            this.numPolygonCornersBox.Name = "numPolygonCornersBox";
-            this.numPolygonCornersBox.Size = new System.Drawing.Size(44, 20);
-            this.numPolygonCornersBox.TabIndex = 21;
-            this.numPolygonCornersBox.Value = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-            this.numPolygonCornersBox.ValueChanged += new System.EventHandler(this.numPolygonCornersBox_ValueChanged);
-            // 
-            // resetCanvasToolStripMenuItem
-            // 
-            this.resetCanvasToolStripMenuItem.Name = "resetCanvasToolStripMenuItem";
-            this.resetCanvasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.resetCanvasToolStripMenuItem.Text = "Reset Canvas";
-            this.resetCanvasToolStripMenuItem.Click += new System.EventHandler(this.resetCanvasToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -891,6 +915,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minSelectDistanceBox)).EndInit();
             this.panel9.ResumeLayout(false);
             this.panel9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPolygonCornersBox)).EndInit();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
             this.tabControl.ResumeLayout(false);
@@ -902,7 +927,6 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPolygonCornersBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -984,6 +1008,9 @@
         private System.Windows.Forms.NumericUpDown numPolygonCornersBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ToolStripMenuItem resetCanvasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem showExceptionLogToolStripMenuItem;
     }
 }
 

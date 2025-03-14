@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrbitSimulatorDemo", "OrbitSimulatorDemo\OrbitSimulatorDemo.csproj", "{6A1963F4-645C-4FD8-A403-8471B7C8673B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A1963F4-645C-4FD8-A403-8471B7C8673B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A1963F4-645C-4FD8-A403-8471B7C8673B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A1963F4-645C-4FD8-A403-8471B7C8673B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A1963F4-645C-4FD8-A403-8471B7C8673B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E51F0E4C-57E3-4580-A2B5-75FA18325E14}
+	EndGlobalSection
+EndGlobal
