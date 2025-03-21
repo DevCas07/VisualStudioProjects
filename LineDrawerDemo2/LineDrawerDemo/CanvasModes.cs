@@ -6,12 +6,5 @@ using System.Threading.Tasks;
 
 namespace LineDrawerDemo
 {
-    public enum CanvasModes
-    {
-        None,
-        editLine,
-        createLine,
-        removeLine,
-        createPolygon,
-    }
+
 }

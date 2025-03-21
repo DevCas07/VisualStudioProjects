@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,12 +13,20 @@ namespace LineDrawerDemo
         //
         // Line Dictionary ------------------------------------------
         //
-        public Dictionary<int, LineObject> LineObjects = new Dictionary<int, LineObject>();
+        internal Dictionary<int, LineObject> LineObjects = new Dictionary<int, LineObject>();
         public LineHandling()
         {
             //Dictionary<int, LineObject> LineObjects = new Dictionary<int, LineObject>();
         }
 
+        public LineObject GetLine(int key)
+        {
+            return LineObjects[key];
+        }
+        public Dictionary<int, LineObject> GetLineObjects()
+        {
+            return LineObjects;
+        }
         //
         // Base line functions handling ------------------------------------------
         //
@@ -35,6 +44,16 @@ namespace LineDrawerDemo
             { Realx1 = StartPosX, Realy1 = StartPosY, Realx2 = EndPosX, Realy2 = EndPosY });
             //fixLineObjectCoordinates(key); // Broken and buggy, test it out
         }
+
+        /// <summary>
+        /// Remove a LineObject/line from dictionary
+        /// </summary>
+        /// <param name="key">line id</param>
+        public void RemoveLineObject(int key)
+        {
+            LineObjects.Remove(key);
+        }
+
         /// <summary>
         /// Edits a specific line's coordinates
         /// </summary>
@@ -43,7 +62,7 @@ namespace LineDrawerDemo
         /// <param name="y1"></param>
         /// <param name="x2"></param>
         /// <param name="y2"></param>
-        public void editLineProperties(int key, int x1, int y1, int x2, int y2) //Edits a specific line's coordinates, --fixes it's x and y coordinates--, updates the TreeView
+        public void editLineProperties(int key, int x1 = 0, int y1 = 0, int x2 = 0, int y2 = 0) //Edits a specific line's coordinates, --fixes it's x and y coordinates--, updates the TreeView
         {
 
             if (x1 != 0) { LineObjects[key].Realx1 = x1; }
