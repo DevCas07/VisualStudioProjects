@@ -20,7 +20,7 @@ namespace LineDrawerDemo
 
         public CanvasObject canvas;
 
-        public CanvasHandling(CanvasObject canvasObject) 
+        public CanvasHandling(CanvasObject canvasObject)
         {
             publicVaribles = new CanvasPublicVaribles();
 
@@ -388,7 +388,5 @@ namespace LineDrawerDemo
             publicVaribles.selectedLineObjects.Clear();
             publicVaribles.selectedPointPos = new Point(-20, -20);
         }
-        public void 
-
     }
 }

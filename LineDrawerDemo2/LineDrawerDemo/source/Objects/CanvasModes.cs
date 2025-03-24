@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace LineDrawerDemo
 {
-    internal class FormRequiredCodeHandling
+    public enum CanvasModes
     {
+        None,
+        editLine,
+        createLine,
+        removeLine,
+        createPolygon,
+        Debug,
     }
 }

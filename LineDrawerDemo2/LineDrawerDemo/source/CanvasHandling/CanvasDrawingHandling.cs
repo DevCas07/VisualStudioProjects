@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,9 +15,11 @@ namespace LineDrawerDemo
         private PictureBox CanvasPictureBox;
         internal CanvasHandling canvasHandle;
         internal CanvasObject canvasObject;
+        private GUIExternalEvents externalEvents;
 
         public CanvasDrawingHandling(CanvasObject CanvasObject, CanvasHandling canvasHandleObject) 
         {
+            externalEvents = GUIExternalEvents.GetInstance();
             canvasHandle = canvasHandleObject;
             canvasObject = CanvasObject;
 
@@ -73,13 +76,15 @@ namespace LineDrawerDemo
                                 {
                                     int[] line = lines[0];
                                     //setSelectedNode(line[0]);
-                                    setSelectedNodeAndLineEnd(line[0], line[1]);
+                                    //setSelectedNodeAndLineEnd(line[0], line[1]);
 
                                     canvasHandle.publicVaribles.selectedCanvasLineEnd = line[1]; //Set to selected line end
                                     canvasHandle.publicVaribles.numClicks = 1;
 
                                     Point endPoint = canvasHandle.getLineEndCoordinates(canvasHandle.publicVaribles.selectedNode, canvasHandle.publicVaribles.selectedCanvasLineEnd);
                                     canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
+
+                                    externalEvents.UpdateFormObjects(); // Trigger Event
 
                                 }
                             }
@@ -91,27 +96,28 @@ namespace LineDrawerDemo
 
                                 canvasHandle.InitializeTempSelectableLines(lines);
 
-                                //
-                                // GUI Redraw
-                                //
-                                updateSelectedLineTreeView();
-                                //selectedLinesTreeView.Focus();
-                                linesDraw();
-                                //
-
                                 if (canvasHandle.publicVaribles.lineMultiLocking == true)
                                 {
                                     canvasHandle.publicVaribles.numClicks = 1;
                                 }
+
+                                //
+                                // GUI Redraw
+                                //
+                                externalEvents.UpdateFormTreeViews(); // Trigger Event
+                                Redraw();
+                                //selectedLinesTreeView.Focus();
+                                //
                             }
                             else { canvasHandle.exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
 
-                            btnCancelCanvasLineAction.Enabled = true;
+                            canvasHandle.publicVaribles.CancelAction = true;
 
                             //
                             // GUI Redraw
                             //
-                            linesDraw();
+                            externalEvents.UpdateFormObjects(); // Trigger Event
+                            Redraw();
                             //
                         }
                         else { canvasHandle.exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
@@ -134,34 +140,34 @@ namespace LineDrawerDemo
                             canvasHandle.publicVaribles.numClicks = 1;
                         }
 
-                        btnCancelCanvasLineAction.Enabled = true;
+                        canvasHandle.publicVaribles.CancelAction = true;
 
                         //
                         // GUI Redraw
                         //
-                        setSelectedNodeText("...");
-                        linesDraw();
+                        //setSelectedNodeText("...");
+                        externalEvents.UpdateFormObjects(); // Trigger Event
+                        Redraw();
                         //
                     }
                     else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine) //Line remove mode ------------------------------------------------------------------------------------
                     {
-                        List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.minSelectDistance);
+                        List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
                         if (canvasHandle.lineHandle.LineObjects.Count > 0)
-                        {
+                        {   
                             if (lines.Count == 1) //Skips selected window and goes to attempt to remove selected node
                             {
                                 int[] line = lines[0];
-                                setSelectedNode(line[0]);
+                                canvasHandle.publicVaribles.selectedNode = line[0];
 
                                 bool tempSuccess;
-                                canvasHandle.removeLineByDialog(canvasHandle.selectedNode, out tempSuccess);
-                                if (tempSuccess) { btnCancelCanvasLineAction.Enabled = false; btnConfirmCanvasLineAction.Enabled = false; }
-                                resetSelectedLine();
+                                canvasHandle.removeLineByDialog(canvasHandle.publicVaribles.selectedNode, out tempSuccess);
+                                if (tempSuccess) { canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false; }
+                                externalEvents.ResetFormParameters();
                             }
                             else if (lines.Count > 0)
                             {
                                 canvasHandle.InitializeTempSelectableLines(lines);
-                                updateSelectedLineTreeView();
                             }
                             else { canvasHandle.exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
                             //btnCancelCanvasLineAction.Enabled = true;
@@ -169,8 +175,9 @@ namespace LineDrawerDemo
                             //
                             // GUI Redraw
                             //
-                            updateLineTreeView();
-                            linesDraw();
+                            externalEvents.UpdateFormObjects(); // Trigger Event
+                            externalEvents.UpdateFormTreeViews(); // Trigger Event
+                            Redraw();
                             //
 
                         }
@@ -180,14 +187,16 @@ namespace LineDrawerDemo
                     {
                         canvasHandle.publicVaribles.tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
                         canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y);
-                        btnCancelCanvasLineAction.Enabled = true;
+
+                        canvasHandle.publicVaribles.CancelAction = true;
 
                         canvasHandle.publicVaribles.numClicks = 1;
 
                         //
                         // GUI Redraw
                         //
-                        linesDraw();
+                        externalEvents.UpdateFormObjects(); // Trigger Event
+                        Redraw();
                         //
                     }
                     //btnCancelCanvasLineAction.Enabled = true;
@@ -221,7 +230,7 @@ namespace LineDrawerDemo
                                             canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
                                             canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
                                             endPoint.X, //x2
-                                            endPoint.X //y2
+                                            endPoint.Y //y2
                                             );
                                     }
                                 }
@@ -253,7 +262,7 @@ namespace LineDrawerDemo
                                     }
                                 }
 
-                                resetSelectedLine(); //Executes before "overriding" code
+                                externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
 
                                 canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y); // viewing rectangle coordinates
                                 //canvasHandle.numClicks = 0;
@@ -310,22 +319,22 @@ namespace LineDrawerDemo
                                     }
                                 }
 
-                                resetSelectedLine(); //Executes before "overriding" code
+                                externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
 
                                 canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                                 //canvasHandle.numClicks = 1;
                             }
 
+                            //resetSelectedLine(); //Maybe add a if statement to a multi after eachother selecting option public varible
+                            canvasHandle.publicVaribles.ConfirmAction = false;
+                            canvasHandle.publicVaribles.CancelAction = false;
+
                             //
                             // GUI Redraw
                             //
-                            updateLineTreeView();
-                            linesDraw();
+                            externalEvents.UpdateFormTreeViews();
+                            Redraw();
                             //
-
-                            //resetSelectedLine(); //Maybe add a if statement to a multi after eachother selecting option public varible
-                            btnConfirmCanvasLineAction.Enabled = false;
-                            btnCancelCanvasLineAction.Enabled = false;
                         }
                         else { canvasHandle.exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
                     }
@@ -364,13 +373,13 @@ namespace LineDrawerDemo
                         //
                         // GUI Redraw
                         //
-                        updateLineTreeView();
-                        linesDraw();
-                        resetSelectedLine();
+                        externalEvents.UpdateFormTreeViews();
+                        externalEvents.ResetFormParameters();
+                        Redraw();
                         //
 
-                        btnConfirmCanvasLineAction.Enabled = false; //Disables the buttons
-                        btnCancelCanvasLineAction.Enabled = false;
+                        canvasHandle.publicVaribles.ConfirmAction = false; //Disables the buttons
+                        canvasHandle.publicVaribles.CancelAction = false;
                     }
                     else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine) //Line remove mode ------------------------------------------------------------------------------------
                     {
@@ -383,15 +392,13 @@ namespace LineDrawerDemo
                             canvasHandle.publicVaribles.radiusPolygon = (int)Math.Sqrt(
                                 Math.Pow((canvasHandle.publicVaribles.tempMouseEndPos.X - canvasHandle.publicVaribles.tempMouseStartPos.X), 2) +
                                 Math.Pow((canvasHandle.publicVaribles.tempMouseEndPos.Y - canvasHandle.publicVaribles.tempMouseStartPos.Y), 2));
-                            //
-                            //Implement way to get what angle the mouse is to make the polygon rotated appropriate
-                            //
+
                             double angleExtension = ((180 * Math.Atan2(canvasHandle.publicVaribles.tempMouseEndPos.Y - canvasHandle.publicVaribles.tempMouseStartPos.Y,
                                                                         canvasHandle.publicVaribles.tempMouseEndPos.X - canvasHandle.publicVaribles.tempMouseStartPos.X)
                             ) / Math.PI);
 
 
-                            Dictionary<int, (Point, Point)> polygonLines = canvasHandle.createPolygonLines(canvasHandle.publicVaribles.tempMouseStartPos.X, canvasHandle.tempMouseStartPos.Y, canvasHandle.numPolygonCorners, canvasHandle.radiusPolygon, angleExtension);
+                            Dictionary<int, (Point, Point)> polygonLines = canvasHandle.createPolygonLines(canvasHandle.publicVaribles.tempMouseStartPos.X, canvasHandle.publicVaribles.tempMouseStartPos.Y, canvasHandle.publicVaribles.numPolygonCorners, canvasHandle.publicVaribles.radiusPolygon, angleExtension);
                             canvasHandle.InitialisePolygon(polygonLines);
 
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
@@ -417,8 +424,8 @@ namespace LineDrawerDemo
                         //
                         // GUI Redraw
                         //
-                        updateLineTreeView();
-                        linesDraw();
+                        externalEvents.UpdateFormTreeViews();
+                        Redraw();
                         //
                     }
                 }
