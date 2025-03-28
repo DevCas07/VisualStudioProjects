@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="source\CanvasHandling\CanvasDrawingHandling.cs" />
     <Compile Include="source\CanvasHandling\CanvasHandling.cs" />
-    <Compile Include="source\Objects\CanvasModes.cs" />
     <Compile Include="source\Objects\CanvasObject.cs" />
     <Compile Include="source\CanvasHandling\CanvasPublicVaribles.cs" />
     <Compile Include="source\ExceptionHandling\CustomExceptions.cs" />

@@ -107,7 +107,7 @@
             this.disableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.resetCanvasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Canvas = new System.Windows.Forms.PictureBox();
+            this.CanvasOld = new System.Windows.Forms.PictureBox();
             this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabFile.SuspendLayout();
@@ -125,7 +125,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.lineKeyBox)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CanvasOld)).BeginInit();
             this.SuspendLayout();
             // 
             // panel5
@@ -871,28 +871,26 @@
             this.resetCanvasToolStripMenuItem.Text = "Reset Canvas";
             this.resetCanvasToolStripMenuItem.Click += new System.EventHandler(this.resetCanvasToolStripMenuItem_Click);
             // 
-            // Canvas
+            // CanvasOld
             // 
-            this.Canvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.CanvasOld.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Canvas.BackColor = System.Drawing.Color.White;
-            this.Canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Canvas.Location = new System.Drawing.Point(204, 26);
-            this.Canvas.Name = "Canvas";
-            this.Canvas.Size = new System.Drawing.Size(678, 388);
-            this.Canvas.TabIndex = 0;
-            this.Canvas.TabStop = false;
-            this.Canvas.SizeChanged += new System.EventHandler(this.Canvas_SizeChanged);
-            //this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
-            //this.Canvas.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick);
+            this.CanvasOld.BackColor = System.Drawing.Color.White;
+            this.CanvasOld.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CanvasOld.Location = new System.Drawing.Point(204, 26);
+            this.CanvasOld.Name = "CanvasOld";
+            this.CanvasOld.Size = new System.Drawing.Size(678, 388);
+            this.CanvasOld.TabIndex = 0;
+            this.CanvasOld.TabStop = false;
+            this.CanvasOld.SizeChanged += new System.EventHandler(this.Canvas_SizeChanged);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 416);
-            this.Controls.Add(this.Canvas);
+            this.Controls.Add(this.CanvasOld);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -926,7 +924,7 @@
             this.tabControl1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CanvasOld)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1004,7 +1002,7 @@
         private System.Windows.Forms.RadioButton radioBtnCreatePolygonMode;
         private System.Windows.Forms.Panel panel10;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox Canvas;
+        private System.Windows.Forms.PictureBox CanvasOld;
         private System.Windows.Forms.NumericUpDown numPolygonCornersBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ToolStripMenuItem resetCanvasToolStripMenuItem;

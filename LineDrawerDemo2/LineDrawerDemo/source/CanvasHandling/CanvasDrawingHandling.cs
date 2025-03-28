@@ -12,17 +12,30 @@ namespace LineDrawerDemo
 {
     public class CanvasDrawingHandling
     {
+        private CanvasHandling canvasHandle;
+
         private PictureBox CanvasPictureBox;
-        internal CanvasHandling canvasHandle;
-        internal CanvasObject canvasObject;
+        private CanvasObject canvasObject;
+
         private GUIExternalEvents externalEvents;
 
-        public CanvasDrawingHandling(CanvasObject CanvasObject, CanvasHandling canvasHandleObject) 
+        public CanvasDrawingHandling(CanvasHandling canvasHandleObject) 
         {
-            externalEvents = GUIExternalEvents.GetInstance();
             canvasHandle = canvasHandleObject;
-            canvasObject = CanvasObject;
 
+            canvasObject = new CanvasObject();
+            CanvasPictureBox = new PictureBox();
+
+            externalEvents = GUIExternalEvents.GetInstance();
+
+            createCanvas(canvasObject.position, canvasObject.size);
+        }
+
+        /// <summary>
+        /// Creates the canvas object on the gui which is represented by a picture box
+        /// </summary>
+        public void createCanvas(Point location, Size size)
+        {
             // 
             // Canvas Object Paramaters //Add parameters that make some of these depend on the imported CanvasObject class data
             // 
@@ -33,16 +46,28 @@ namespace LineDrawerDemo
             this.CanvasPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CanvasPictureBox.Name = "Canvas";
 
-            this.CanvasPictureBox.Location = new System.Drawing.Point(canvasObject.position.X, canvasObject.position.Y);
-            this.CanvasPictureBox.Size = new System.Drawing.Size(canvasObject.size.Width, canvasObject.size.Height);
+            this.CanvasPictureBox.Location = new System.Drawing.Point(location.X, location.Y);
+            this.CanvasPictureBox.Size = new System.Drawing.Size(size.Width, size.Height);
 
             this.CanvasPictureBox.TabIndex = 0;
             this.CanvasPictureBox.TabStop = false;
             //this.CanvasPictureBox.SizeChanged += new System.EventHandler(this.Canvas_SizeChanged);
             this.CanvasPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
-            this.CanvasPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick);
+            this.CanvasPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick); 
         }
 
+        public void removeCanvas()
+        {
+            CanvasPictureBox = null;
+        }
+
+        public Control getCanvas //Retrieve canvas represented as picture box to canvasHandle
+        { 
+            get
+            {
+                return CanvasPictureBox;
+            }
+        }
         /// <summary>
         /// Force canvas to redraw
         /// </summary>
@@ -63,7 +88,7 @@ namespace LineDrawerDemo
             //int[] temp3 = getClosestLinesAsArray(e.Location.X, e.Location.Y, 10);
             if (canvasHandle.publicVaribles.DebugMode == true)
             {
-                if (canvasHandle.publicVaribles.numClicks == 0) //First mouse click
+                if (canvasHandle.publicVaribles.currentNumClick == numClick.First) //First mouse click
                 {
                     if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine) //Line edit mode ------------------------------------------------------------------------------------
                     {
@@ -79,7 +104,7 @@ namespace LineDrawerDemo
                                     //setSelectedNodeAndLineEnd(line[0], line[1]);
 
                                     canvasHandle.publicVaribles.selectedCanvasLineEnd = line[1]; //Set to selected line end
-                                    canvasHandle.publicVaribles.numClicks = 1;
+                                    canvasHandle.publicVaribles.currentNumClick = numClick.Second;
 
                                     Point endPoint = canvasHandle.getLineEndCoordinates(canvasHandle.publicVaribles.selectedNode, canvasHandle.publicVaribles.selectedCanvasLineEnd);
                                     canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
@@ -98,7 +123,7 @@ namespace LineDrawerDemo
 
                                 if (canvasHandle.publicVaribles.lineMultiLocking == true)
                                 {
-                                    canvasHandle.publicVaribles.numClicks = 1;
+                                    canvasHandle.publicVaribles.currentNumClick = numClick.Second;
                                 }
 
                                 //
@@ -129,7 +154,7 @@ namespace LineDrawerDemo
                         {
                             Point endPoint = canvasHandle.getClosestLineEndCoordinate(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance, out int lineEnd);
                             canvasHandle.publicVaribles.tempMouseStartPos = new Point(endPoint.X, endPoint.Y);
-                            canvasHandle.publicVaribles.numClicks = 1;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.Second;
                             canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
                         }
                         else //Executes if no nearby line is found, if lines <= 0
@@ -137,7 +162,7 @@ namespace LineDrawerDemo
                             //generateException("");
                             canvasHandle.publicVaribles.tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y);
-                            canvasHandle.publicVaribles.numClicks = 1;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.Second;
                         }
 
                         canvasHandle.publicVaribles.CancelAction = true;
@@ -190,7 +215,7 @@ namespace LineDrawerDemo
 
                         canvasHandle.publicVaribles.CancelAction = true;
 
-                        canvasHandle.publicVaribles.numClicks = 1;
+                        canvasHandle.publicVaribles.currentNumClick = numClick.Second;
 
                         //
                         // GUI Redraw
@@ -202,7 +227,7 @@ namespace LineDrawerDemo
                     //btnCancelCanvasLineAction.Enabled = true;
 
                 }
-                else if (canvasHandle.publicVaribles.numClicks == 1) //Second mouse click
+                else if (canvasHandle.publicVaribles.currentNumClick == numClick.Second) //Second mouse click
                 {
                     if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine) //Line edit mode ------------------------------------------------------------------------------------
                     {
@@ -355,7 +380,7 @@ namespace LineDrawerDemo
                                     canvasHandle.publicVaribles.tempMouseEndPos.Y);
 
                             canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y); // viewing rectangle coordinates
-                            canvasHandle.publicVaribles.numClicks = 0;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.First;
                         }
                         else //Executes if no nearby line is found, if lines <= 0
                         {
@@ -367,7 +392,7 @@ namespace LineDrawerDemo
                                 canvasHandle.publicVaribles.tempMouseEndPos.X,
                                 canvasHandle.publicVaribles.tempMouseEndPos.Y
                                 );
-                            canvasHandle.publicVaribles.numClicks = 0;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.First;
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                         }
                         //
@@ -402,15 +427,16 @@ namespace LineDrawerDemo
                             canvasHandle.InitialisePolygon(polygonLines);
 
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
-                            canvasHandle.publicVaribles.numClicks = 0;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.First;
                         }
 
                         List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
                         if (lines.Count > 0 && canvasHandle.publicVaribles.lockInToLineEnds == true)
                         {
                             Point endPoint = canvasHandle.getClosestLineEndCoordinate(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance, out int lineEnd);
+                            
                             canvasHandle.publicVaribles.tempMouseStartPos = new Point(endPoint.X, endPoint.Y);
-                            canvasHandle.publicVaribles.numClicks = 1;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.Second;  
                             canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
                         }
                         else //Executes if no nearby line is found, if lines <= 0
@@ -418,7 +444,7 @@ namespace LineDrawerDemo
                             //generateException("");
                             canvasHandle.publicVaribles.tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y);
-                            canvasHandle.publicVaribles.numClicks = 1;
+                            canvasHandle.publicVaribles.currentNumClick = numClick.Second;
                         }
 
                         //
@@ -432,8 +458,6 @@ namespace LineDrawerDemo
                 //resetSelectedLine();
             }
         }
-
-
 
 
 

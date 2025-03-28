@@ -11,26 +11,47 @@ namespace LineDrawerDemo
 {
     public class CanvasHandling
     {
-
-        public LineHandling lineHandle;
+        internal LineHandling lineHandle;
         internal FileHandling fileHandle;
-        public ExceptionHandling exception;
-        public CanvasDrawingHandling drawingHandle;
+        internal ExceptionHandling exception;
+        private CanvasDrawingHandling drawingHandle;
+        
         internal CanvasPublicVaribles publicVaribles;
 
-        public CanvasObject canvas;
-
-        public CanvasHandling(CanvasObject canvasObject)
+        public CanvasHandling()
         {
             publicVaribles = new CanvasPublicVaribles();
 
-            this.canvas = canvasObject;
-
             lineHandle = new LineHandling();
             fileHandle = new FileHandling(lineHandle);
-            drawingHandle = new CanvasDrawingHandling(canvasObject, this);
+            drawingHandle = new CanvasDrawingHandling(this);
 
             exception = LineDrawerDemo.ExceptionHandling.GetInstance();
+        }
+        /// <summary>
+        /// Creates new canvas control based on CanvasObject
+        /// </summary>
+        /// <param name="canvasObject"></param>
+        public void CreateCanvas(CanvasObject canvasObject)
+        {
+            drawingHandle.createCanvas(canvasObject.position, canvasObject.size);
+        }
+        /// <summary>
+        /// Removes canvas control, use with caution
+        /// </summary>
+        public void RemoveCanvas()
+        {
+            drawingHandle.removeCanvas();
+        }
+        /// <summary>
+        /// Retrieves canvas control
+        /// </summary>
+        public Control getCanvas
+        {
+            get
+            {
+                return drawingHandle.getCanvas;
+            }
         }
 
         public void Redraw()
@@ -384,7 +405,7 @@ namespace LineDrawerDemo
             //else if (modeId == "removeLine") { canvasLineMode = "removeLine"; }
             //else if (modeId == "createPolygon") { canvasLineMode = "createPolygon"; }
 
-            publicVaribles.numClicks = 0;
+            publicVaribles.currentNumClick = numClick.First;
             publicVaribles.selectedLineObjects.Clear();
             publicVaribles.selectedPointPos = new Point(-20, -20);
         }
