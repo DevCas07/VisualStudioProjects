@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace LineDrawerDemo
 {
-
-    //The purpuseof this class is to be able to declare the logic of events in form1.cs but still be acle to call that code whereever needed without needing to inherit form1.cs further down the hierarchy
-    
+    /// <summary>
+    /// Declares a public delegate that can interact throught the entire namespace that handles the external events
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void GUIExternalEventHandler(object sender, EventArgs e);
-    
+
+    /// <summary>
+    /// The purpose of this class is to be able to declare the logic of events in form1.cs but still be able to call that code where ever needed without needing to inherit form1.cs further down the hierarchy
+    /// </summary>
     public class GUIExternalEvents
     {
         private static GUIExternalEvents instance;
@@ -34,8 +39,10 @@ namespace LineDrawerDemo
                 return instance;
             }
         }
-
-        protected virtual void OnUpdateFormObjects(EventArgs e) //Declare invoking of the events
+        //
+        // Declare invoking of the events
+        //
+        protected virtual void OnUpdateFormObjects(EventArgs e)
         {
             EventUpdateFormObjects.Invoke(this, e);
         }
@@ -49,7 +56,10 @@ namespace LineDrawerDemo
             EventUpdateFormTreeViews.Invoke(this, e);
         }
 
-        public void UpdateFormObjects() //Callable methods that trigger the events
+        //
+        // Callable methods that trigger the events
+        //
+        public void UpdateFormObjects()
         {
             OnUpdateFormObjects(EventArgs.Empty);
         }

@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace LineDrawerDemo
 {
+    /// <summary>
+    /// Handles drawing inside the Canvas 
+    /// </summary>
     public class CanvasDrawingHandling
     {
         private CanvasHandling canvasHandle;
@@ -23,12 +26,21 @@ namespace LineDrawerDemo
         {
             canvasHandle = canvasHandleObject;
 
-            canvasObject = new CanvasObject();
             CanvasPictureBox = new PictureBox();
+            canvasObject = new CanvasObject();
 
             externalEvents = GUIExternalEvents.GetInstance();
 
-            createCanvas(canvasObject.position, canvasObject.size);
+            //createCanvas(canvasObject.position, canvasObject.size);
+        }
+
+        /// <summary>
+        /// Retrieves canvasObject
+        /// </summary>
+        /// <returns></returns>
+        public CanvasObject getCanvasObject()
+        {
+             return canvasObject;
         }
 
         /// <summary>
@@ -36,8 +48,14 @@ namespace LineDrawerDemo
         /// </summary>
         public void createCanvas(Point location, Size size)
         {
+            //
+            //Set data to canvasOject, since it's used
+            //
+            canvasObject.position = location;
+            canvasObject.size = size;
+
             // 
-            // Canvas Object Paramaters //Add parameters that make some of these depend on the imported CanvasObject class data
+            // Canvas Object Paramaters, Add parameters that make some of these depend on the imported CanvasObject class data, finally works
             // 
             this.CanvasPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
@@ -55,18 +73,21 @@ namespace LineDrawerDemo
             this.CanvasPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.lineCanvas_Paint);
             this.CanvasPictureBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Canvas_MouseClick); 
         }
-
+        /// <summary>
+        /// Removes canvas by declaring it null
+        /// </summary>
         public void removeCanvas()
         {
             CanvasPictureBox = null;
         }
-
-        public Control getCanvas //Retrieve canvas represented as picture box to canvasHandle
-        { 
-            get
-            {
-                return CanvasPictureBox;
-            }
+        /// <summary>
+        /// Retrieves canvas represented as picture box to canvasHandle
+        /// </summary>
+        /// <returns></returns>
+        public Control getCanvas() //Retrieves canvas represented as picture box to canvasHandle
+        {
+            CanvasPictureBox.BringToFront();
+            return CanvasPictureBox;
         }
         /// <summary>
         /// Force canvas to redraw

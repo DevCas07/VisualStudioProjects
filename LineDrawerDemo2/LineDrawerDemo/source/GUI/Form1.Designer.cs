@@ -40,6 +40,7 @@
             this.checkBoxLockInToLineEnds = new System.Windows.Forms.CheckBox();
             this.selectedLinesTreeView = new System.Windows.Forms.TreeView();
             this.tabFile = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
             this.btnReloadFile = new System.Windows.Forms.Button();
             this.btnOpenFile = new System.Windows.Forms.Button();
@@ -231,6 +232,7 @@
             // tabFile
             // 
             this.tabFile.BackColor = System.Drawing.Color.White;
+            this.tabFile.Controls.Add(this.button1);
             this.tabFile.Controls.Add(this.panel6);
             this.tabFile.Controls.Add(this.panel4);
             this.tabFile.Location = new System.Drawing.Point(4, 22);
@@ -238,6 +240,16 @@
             this.tabFile.Size = new System.Drawing.Size(189, 364);
             this.tabFile.TabIndex = 2;
             this.tabFile.Text = "File";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(72, 236);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 15;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // panel6
             // 
@@ -876,13 +888,14 @@
             this.CanvasOld.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.CanvasOld.BackColor = System.Drawing.Color.White;
+            this.CanvasOld.BackColor = System.Drawing.Color.Transparent;
             this.CanvasOld.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CanvasOld.Location = new System.Drawing.Point(204, 26);
             this.CanvasOld.Name = "CanvasOld";
             this.CanvasOld.Size = new System.Drawing.Size(678, 388);
             this.CanvasOld.TabIndex = 0;
             this.CanvasOld.TabStop = false;
+            this.CanvasOld.Visible = false;
             this.CanvasOld.SizeChanged += new System.EventHandler(this.Canvas_SizeChanged);
             // 
             // MainWindow
@@ -1009,6 +1022,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem showExceptionLogToolStripMenuItem;
+        private System.Windows.Forms.Button button1;
     }
 }
 

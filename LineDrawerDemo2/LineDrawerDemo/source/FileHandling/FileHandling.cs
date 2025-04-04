@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LineDrawerDemo
 {
+    /// <summary>
+    /// Handles reading and writing files
+    /// </summary>
     public class FileHandling
     {
         public string fileLocation = @"C:\"; //Application.StartupPath;
         private LineHandling lineHandle;
+        private ExceptionHandling exception;
 
         public FileHandling(LineHandling tempLineHandle)// TODO interface som bara visar variabeln lineHandle
         {
             this.lineHandle = tempLineHandle;
+            exception = ExceptionHandling.GetInstance();
         }
 
         //
         // Save File Handling ------------------------------------------
         //
+
+        /// <summary>
+        /// Opens a SaveFileDialog
+        /// </summary>
         public void viewSaveFileDialog()
         {
             SaveFileDialog save = new SaveFileDialog();
@@ -35,28 +46,42 @@ namespace LineDrawerDemo
             }
         }
 
-        public void writeLineFile(string location) //Saves and writes file, from dictionary
+        /// <summary>
+        /// Attempts to save and write file, adds lines from dictionary
+        /// </summary>
+        /// <param name="location">File location</param>
+        public void writeLineFile(string location) //Attempts to save and write file, adds lines from dictionary
         {
-
-            if (lineHandle.LineObjects.Count != 0)
+            try
             {
-                StreamWriter write = new StreamWriter(location);
-                foreach (var lineObject in lineHandle.LineObjects)
+                if (lineHandle.LineObjects.Count != 0)
                 {
-                    write.WriteLine(
-                        "line:" + lineObject.Key
-                        + ",x1:" + lineObject.Value.Realx1
-                        + ",y1:" + lineObject.Value.Realy1
-                        + ",x2:" + lineObject.Value.Realx2
-                        + ",y2:" + lineObject.Value.Realy2
-                        );
+                    StreamWriter write = new StreamWriter(location);
+                    foreach (var lineObject in lineHandle.LineObjects)
+                    {
+                        write.WriteLine(
+                            "line:" + lineObject.Key
+                            + ",x1:" + lineObject.Value.Realx1
+                            + ",y1:" + lineObject.Value.Realy1
+                            + ",x2:" + lineObject.Value.Realx2
+                            + ",y2:" + lineObject.Value.Realy2
+                            );
+                    }
+                    write.Close();
                 }
-                write.Close();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                exception.generateException(CustomExceptions.unauthorized_directory_or_file_access);
             }
         }
         //
         // Load File Handling ------------------------------------------
         //
+
+        /// <summary>
+        /// Opens a OpenFileDialog
+        /// </summary>
         public void viewOpenFileDialog()
         {
             OpenFileDialog open = new OpenFileDialog();
@@ -70,58 +95,67 @@ namespace LineDrawerDemo
                 readLineFile(open.FileName);
             }
         }
-        public void readLineFile(string location) //Reads and loads file, adds file line contents to dictionary
+        /// <summary>
+        /// Attempts to reads and loads file, adds file line contents to dictionary
+        /// </summary>
+        /// <param name="location">File location</param>
+        public void readLineFile(string location) //Attempts to read and load file, adds file line contents to dictionary
         {
-            lineHandle.LineObjects.Clear();
-
-            string[] lines = System.IO.File.ReadAllLines(location);
-            if (lines.Length != 0)
+            try
             {
-                foreach (string str in lines)
+                lineHandle.LineObjects.Clear();
+
+                string[] lines = System.IO.File.ReadAllLines(location);
+                if (lines.Length != 0)
                 {
-                    string[] linesObject = str.Split(',');
-
-                    int tempKey = 0; int tempX1 = 0; int tempX2 = 0; int tempY1 = 0; int tempY2 = 0;
-
-                    foreach (string Str in linesObject)
+                    foreach (string str in lines)
                     {
-                        string tempStr = Str;
-                        string[] linesSubValue = new string[2];
-                        linesSubValue = tempStr.Split(':');
-                        //string tempString = linesSubValue[0];
+                        string[] linesObject = str.Split(',');
 
-                        switch (linesSubValue[0])
+                        int tempKey = 0; int tempX1 = 0; int tempX2 = 0; int tempY1 = 0; int tempY2 = 0;
+
+                        foreach (string Str in linesObject)
                         {
-                            case "line":
-                                if (int.TryParse(linesSubValue[1], out tempKey)) { } else { tempKey = 0; } //In else check if key available if not set next available
-                                break;
-                            case "x1":
-                                if (int.TryParse(linesSubValue[1], out tempX1)) { } else { tempX1 = 0; }
-                                break;
-                            case "y1":
-                                if (int.TryParse(linesSubValue[1], out tempY1)) { } else { tempY1 = 0; }
-                                break;
-                            case "x2":
-                                if (int.TryParse(linesSubValue[1], out tempX2)) { } else { tempX2 = 0; }
-                                break;
-                            case "y2":
-                                if (int.TryParse(linesSubValue[1], out tempY2)) { } else { tempY2 = 0; }
-                                break;
-                            default:
-                                break;
+                            string tempStr = Str;
+                            string[] linesSubValue = new string[2];
+                            linesSubValue = tempStr.Split(':');
+                            //string tempString = linesSubValue[0];
+
+                            switch (linesSubValue[0])
+                            {
+                                case "line":
+                                    if (int.TryParse(linesSubValue[1], out tempKey)) { } else { tempKey = 0; } //In else check if key available if not set next available
+                                    break;
+                                case "x1":
+                                    if (int.TryParse(linesSubValue[1], out tempX1)) { } else { tempX1 = 0; }
+                                    break;
+                                case "y1":
+                                    if (int.TryParse(linesSubValue[1], out tempY1)) { } else { tempY1 = 0; }
+                                    break;
+                                case "x2":
+                                    if (int.TryParse(linesSubValue[1], out tempX2)) { } else { tempX2 = 0; }
+                                    break;
+                                case "y2":
+                                    if (int.TryParse(linesSubValue[1], out tempY2)) { } else { tempY2 = 0; }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        if (lineHandle.checkKeyAvailability(tempKey))
+                        {
+                            lineHandle.InitializeLineObject(tempKey, tempX1, tempY1, tempX2, tempY2);
+                        }
+                        else
+                        {
+
                         }
                     }
-                    if (lineHandle.checkKeyAvailability(tempKey))
-                    {
-                        lineHandle.InitializeLineObject(tempKey, tempX1, tempY1, tempX2, tempY2);
-                    }
-                    else
-                    {
-
-                    }
                 }
-                //updateLineTreeView();
-                //linesDraw();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                exception.generateException(CustomExceptions.unauthorized_directory_or_file_access);
             }
         }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LineDrawerDemo;
+using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,10 +31,10 @@ namespace LineDrawerDemo
         ExceptionHandling exception = ExceptionHandling.GetInstance();
         CanvasHandling canvasHandle;
         GUIExternalEvents guiExternalEvents;
+        AddControlDuringRuntimeTestClass AddControlDuringRuntimeTestClass123;
 
         public MainWindow()
         {
-
             InitializeComponent();
 
             guiExternalEvents = GUIExternalEvents.GetInstance();
@@ -48,8 +50,16 @@ namespace LineDrawerDemo
 
             canvasHandle = new CanvasHandling();
             canvasHandle.CreateCanvas(canvasObject);
-            Controls.Add(canvasHandle.getCanvas); //Add canvas object to control list, Buggy right now, it wont be drawn for some reason and the events doesn't work either
+
+            Control canvas = new Control();
+
+            //canvas = canvasHandle.getCanvas();
+            Controls.Add(canvasHandle.getCanvas(););
+            //canvas.BringToFront();
+
             canvasHandle.Redraw();
+
+            this.Invalidate();
         }
 
         //
@@ -528,6 +538,17 @@ namespace LineDrawerDemo
         private void Canvas_SizeChanged(object sender, EventArgs e)
         {
             linesDraw();
+        }
+
+        public void button1_Click(object sender, EventArgs e)
+        {
+
+            AddControlDuringRuntimeTestClass test123;
+            test123 = new AddControlDuringRuntimeTestClass();
+            Control control = test123.getControl();
+
+            Controls.Add(control);
+            this.Invalidate();
         }
     }
 }

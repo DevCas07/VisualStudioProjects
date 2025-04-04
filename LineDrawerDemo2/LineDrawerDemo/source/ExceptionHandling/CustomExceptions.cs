@@ -14,5 +14,6 @@ namespace LineDrawerDemo
         public static string no_existing_lines { get { return "No lines exist"; } }
         public static string invalid_selected_node { get { return "Selected node is invalid"; } }
         public static string null_list_contents { get { return "List is null"; } }
+        public static string unauthorized_directory_or_file_access { get { return "Cannot access of directory/file"; } }
     }
 }

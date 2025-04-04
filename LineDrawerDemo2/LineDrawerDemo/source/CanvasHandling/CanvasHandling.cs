@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace LineDrawerDemo
 {
+    /// <summary>
+    /// Handles overall available functions to user and acts as a data intermediary between classes
+    /// </summary>
     public class CanvasHandling
     {
         internal LineHandling lineHandle;
@@ -44,16 +47,15 @@ namespace LineDrawerDemo
             drawingHandle.removeCanvas();
         }
         /// <summary>
-        /// Retrieves canvas control
+        /// Retrieves canvas control represented as PictureBox
         /// </summary>
-        public Control getCanvas
+        public Control getCanvas()
         {
-            get
-            {
-                return drawingHandle.getCanvas;
-            }
+            return drawingHandle.getCanvas();
         }
-
+        /// <summary>
+        /// Force canvas to redraw
+        /// </summary>
         public void Redraw()
         {
             drawingHandle.Redraw();
@@ -196,7 +198,7 @@ namespace LineDrawerDemo
         /// </summary>
         /// <param name="baseXPos"></param>
         /// <param name="baseYPos"></param>
-        /// <param name="lineEnd"></param>
+        /// <param name="lineEnd">returns which lineEnd is the closest from mouse pointer</param>
         /// <returns></returns>
         public int getClosestLineAsKey(int baseXPos, int baseYPos, out int lineEnd) //Maybe implement this system in future, (not used), maybe test
         {
@@ -205,7 +207,8 @@ namespace LineDrawerDemo
             int closestLineEndDistance = 10000000;
             int baseDistance = (int)(Math.Pow(baseXPos, 2) + Math.Pow(baseYPos, 2));
 
-            foreach (var line in lineHandle.LineObjects)
+            Dictionary<int, LineObject> LineObjects = lineHandle.GetLineObjects();
+            foreach (var line in LineObjects)
             {
                 int lineDistanceLineEnd1 = (int)Math.Abs((Math.Pow(lineHandle.LineObjects[line.Key].Realx1, 2) + Math.Pow(lineHandle.LineObjects[line.Key].Realy1, 2)) - baseDistance);
                 int lineDistanceLineEnd2 = (int)Math.Abs((Math.Pow(lineHandle.LineObjects[line.Key].Realx2, 2) + Math.Pow(lineHandle.LineObjects[line.Key].Realy2, 2)) - baseDistance);
@@ -225,6 +228,15 @@ namespace LineDrawerDemo
             lineEnd = closestLineEnd;
             return key;
         }
+        /// <summary>
+        /// Get line keys and line ends that are within a certain area
+        /// </summary>
+        /// <param name="baseXPos"></param>
+        /// <param name="baseYPos"></param>
+        /// <param name="minDistance">minimun distance from mouse pointer which can be detected</param>
+
+        /// 
+        /// <returns></returns>
         public List<int[]> getClosestLinesAsArrayWithLineEnds(int baseXPos, int baseYPos, int minDistance) //Get line keys and line ends that are within a certain area
         {
             List<int[]> lines = new List<int[]>();
@@ -242,6 +254,14 @@ namespace LineDrawerDemo
             }
             return lines;
         }
+        /// <summary>
+        /// Gets line key and line end that are within a certain area
+        /// </summary>
+        /// <param name="baseXPos"></param>
+        /// <param name="baseYPos"></param>
+        /// <param name="minDistance">minimun distance from mouse pointer which can be detected</param>
+        /// <param name="lineEnd">returns which lineEnd is the closest from mouse pointer</param>
+        /// <returns></returns>
         public Point getClosestLineEndCoordinate(int baseXPos, int baseYPos, int minDistance, out int lineEnd) //Get line keys and line ends that are within a certain area
         {
             List<int[]> lines = getClosestLinesAsArrayWithLineEnds(baseXPos, baseYPos, minDistance);
@@ -268,6 +288,13 @@ namespace LineDrawerDemo
             lineEnd = line[1];
             return lineCoordinates;
         }
+        /// <summary>
+        /// Gets line key that are within a certain area
+        /// </summary>
+        /// <param name="baseXPos"></param>
+        /// <param name="baseYPos"></param>
+        /// <param name="minDistance">minimun distance from mouse pointer which can be detected</param>
+        /// <returns></returns>
         public int[] getClosestLinesAsArray(int baseXPos, int baseYPos, int minDistance) //Get line keys that are within a certain area
         {
             List<int> listLines = new List<int>();
@@ -285,6 +312,12 @@ namespace LineDrawerDemo
             int[] lines = listLines.ToArray();
             return lines;
         }
+        /// <summary>
+        /// Retrieves line end coordinate
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="lineEnd"></param>
+        /// <returns></returns>
         public Point getLineEndCoordinates(int key, int lineEnd) //Retrieves line end coordinates 
         {
             //int[] line = new int[2];
@@ -307,8 +340,8 @@ namespace LineDrawerDemo
         /// <summary>
         /// Creates a polygon shape consisting of connected but individually seperated lines 
         /// </summary>
-        /// <param name="xPos"></param>
-        /// <param name="yPos"></param>
+        /// <param name="xPos">Middle point x position</param>
+        /// <param name="yPos">Middle point y position</param>
         /// <param name="numPolygonCorners"></param>
         /// <param name="radius"></param>
         /// <param name="angleExtension">The angle between the second selected position and the first selected postion based on the x-axis</param>
@@ -379,7 +412,10 @@ namespace LineDrawerDemo
         //
         // Necessary miscellaneous canvas handling ------------------------------------------
         //
-
+        /// <summary>
+        /// Adds found lines to temporary selectable list
+        /// </summary>
+        /// <param name="lines"></param>
         public void InitializeTempSelectableLines(List<int[]> lines) // Adds found lines to temporary selectable list
         {
             publicVaribles.selectedLineObjects.Clear();
