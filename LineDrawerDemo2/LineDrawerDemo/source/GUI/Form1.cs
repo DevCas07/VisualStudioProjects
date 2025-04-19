@@ -28,50 +28,90 @@ namespace LineDrawerDemo
     {
         CanvasObject canvasObject;
 
-        ExceptionHandling exception = ExceptionHandling.GetInstance();
+        ExceptionHandling exception = ExceptionHandling.GetInstance(); //Retrieve a singleton instance of Exception handling
         CanvasHandling canvasHandle;
         GUIExternalEvents guiExternalEvents;
-        AddControlDuringRuntimeTestClass AddControlDuringRuntimeTestClass123;
+        AddControlDuringRuntimeTestClass AddControlDuringRuntimeTestClass123; //Information sending test class
 
         public MainWindow()
         {
             InitializeComponent();
 
+            //
+            // Initialise all externally callable events
+            //
             guiExternalEvents = GUIExternalEvents.GetInstance();
 
             guiExternalEvents.EventUpdateFormTreeViews += EventUpdateFormTreeViews;
             guiExternalEvents.EventUpdateFormObjects += EventUpdateFormObjects;
             guiExternalEvents.EventResetFormParameters += GuiExternalEvents_EventResetFormParameters;
 
+            //
+            // Initialise new canvas surface's position and size
+            //
             canvasObject = new CanvasObject();
-            canvasObject.position = new Point(this.CanvasOld.Location.X, this.CanvasOld.Location.Y);
-            canvasObject.size = new Size(this.CanvasOld.Size.Width, this.CanvasOld.Size.Height);
+            canvasObject.position = new Point(this.CanvasReference.Location.X, this.CanvasReference.Location.Y);
+            canvasObject.size = new Size(this.CanvasReference.Size.Width, this.CanvasReference.Size.Height);
 
-
+            //
+            // Create new intermediary data handler a 'canvasHandle Object' and initialise a new drawing surface based on canvasObject's properties
+            //
             canvasHandle = new CanvasHandling();
             canvasHandle.CreateCanvas(canvasObject);
 
-            Control canvas = new Control();
-
-            //canvas = canvasHandle.getCanvas();
-            Controls.Add(canvasHandle.getCanvas(););
-            //canvas.BringToFront();
-
+            //
+            // Add new canvas drawing surface to Control Collection and draw it out
+            //
+            Controls.Add(canvasHandle.getCanvas());
             canvasHandle.Redraw();
-
-            this.Invalidate();
         }
 
         //
-        // Declare trigger event logic handling ------------------------------------------
+        // Declare externally callable event logic and handling ------------------------------------------
         //
 
         private void GuiExternalEvents_EventResetFormParameters(object sender, EventArgs e)
         {
-            resetSelectedLine();
+            resetFormParameters();
         }
 
         private void EventUpdateFormObjects(object sender, EventArgs e)
+        {
+            updateFormObjects();
+        }
+
+        private void EventUpdateFormTreeViews(object sender, EventArgs e)
+        {
+            updateLineTreeView();
+            updateSelectedLineTreeView();
+        }
+
+        //
+        // Necessary miscellaneous public handling ------------------------------------------
+        //
+
+        public void resetFormParameters()
+        {
+            this.SuspendLayout();
+            canvasHandle.publicVaribles.currentNumClick = numClick.First;
+
+            canvasHandle.publicVaribles.ConfirmAction = false;
+            canvasHandle.publicVaribles.CancelAction = false;
+
+            canvasHandle.publicVaribles.selectedPointPos = new Point(-20, -20);
+
+            selectedNodeLabel.Text = "Selected node: [None]";
+            selectedNodeLabel2.Text = "Selected node: [None]";
+
+            selectedLinesTreeView.Nodes[0].Nodes.Clear();
+            canvasHandle.publicVaribles.selectedLineObjects.Clear();
+        }
+        public void clearSelectedLineObjects()
+        {
+            selectedLinesTreeView.Nodes[0].Nodes.Clear();
+            canvasHandle.publicVaribles.selectedLineObjects.Clear();
+        }
+        public void updateFormObjects()
         {
             if (canvasHandle.publicVaribles.canvasLineMode.Equals(CanvasModes.editLine))
             {
@@ -87,74 +127,12 @@ namespace LineDrawerDemo
             btnCancelCanvasLineAction.Enabled = canvasHandle.publicVaribles.CancelAction;
             btnConfirmCanvasLineAction.Enabled = canvasHandle.publicVaribles.ConfirmAction;
         }
-
-        private void EventUpdateFormTreeViews(object sender, EventArgs e)
-        {
-            updateLineTreeView();
-            updateSelectedLineTreeView();
-        }
-
-        //
-        // Necessary miscellaneous public handling ------------------------------------------
-        //
-
-        public void setCanvasMode(CanvasModes canvasMode) //string modeId)
-        {
-            
-            canvasHandle.publicVaribles.canvasLineMode = canvasMode;
-
-            //if (modeId == "editLine") { canvasHandle.canvasLineMode = "editLine"; }
-            //else if (modeId == "createLine") { canvasHandle.canvasLineMode = "createLine"; }
-            //else if (modeId == "removeLine") { canvasHandle.canvasLineMode = "removeLine"; }
-            //else if (modeId == "createPolygon") { canvasHandle.canvasLineMode = "createPolygon"; }
-        }
-        public void resetSelectedLine()
-        {
-            this.SuspendLayout();
-            canvasHandle.publicVaribles.currentNumClick = numClick.First;
-
-            canvasHandle.publicVaribles.selectedPointPos = new Point(-20, -20);
-
-            selectedNodeLabel.Text = "Selected node: [None]";
-            selectedNodeLabel2.Text = "Selected node: [None]";
-
-            btnCancelCanvasLineAction.Enabled = false;
-            btnConfirmCanvasLineAction.Enabled = false;
-
-            selectedLinesTreeView.Nodes[0].Nodes.Clear();
-            canvasHandle.publicVaribles.selectedLineObjects.Clear();
-        }
-        public void clearSelectedLineObjects()
-        {
-            selectedLinesTreeView.Nodes[0].Nodes.Clear();
-            canvasHandle.publicVaribles.selectedLineObjects.Clear();
-        }
-        public void setSelectedNode(int nodeKey) //Changes varible and label to correspont to correct selectedNode
-        {
-            canvasHandle.publicVaribles.selectedNode = nodeKey;
-            guiExternalEvents.UpdateFormObjects();
-            //selectedNodeLabel.Text = "Selected node: [" + canvasHandle.publicVaribles.selectedNode + "]";
-            //selectedNodeLabel2.Text = "Selected node: [" + canvasHandle.publicVaribles.selectedNode + "]";
-        }
-
-        public void setSelectedNodeText(string text) //Only changes the selected node lables' texts
-        {
-            selectedNodeLabel.Text = "Selected node: [" + text + "]";
-            selectedNodeLabel2.Text = "Selected node: [" + text + "]";
-        }
-        public void linesDraw() //Forces canvas to redraw, deprecated
-        {
-            if (true) //if (LineObjects.Keys.Count > 0)
-            {
-                CanvasOld.Invalidate();
-                CanvasOld.Update();
-            }
-        }
         public void updateLineTreeView() //Updates the treeView to correspond to the updated dictionary's contents
         {
             linesTreeView.Nodes[0].Nodes.Clear();
+            Dictionary<int, LineObject> LineObjects = canvasHandle.lineHandle.GetLineObjects();
 
-            foreach (var lineObject in canvasHandle.lineHandle.LineObjects.Keys)
+            foreach (var lineObject in LineObjects.Keys)
             {
                 TreeNode node = new TreeNode();
                 node.Text = "Line" + lineObject.ToString();
@@ -192,11 +170,6 @@ namespace LineDrawerDemo
                 selectedLinesTreeView.Nodes[0].Expand();
             }
         }
-        
-        
-        //
-        // Canvas drawing handling ------------------------------------------
-        //
 
         //
         // Selecting line in treeView handling ------------------------------------------
@@ -204,11 +177,11 @@ namespace LineDrawerDemo
         private void linesTreeView_AfterSelect(object sender, TreeViewEventArgs e) //After tree view selecting node handling ------------------------------------------
         {
             if (linesTreeView.SelectedNode.Tag.ToString() != "main") {
-                
-                resetSelectedLine();
+
+                resetFormParameters();
                 clearSelectedLineObjects();
-                //setSelectedNode((int)linesTreeView.SelectedNode.Tag);
-                canvasHandle.publicVaribles.selectedNode = (int)linesTreeView.SelectedNode.Tag;
+
+                canvasHandle.setSelectedNode((int)linesTreeView.SelectedNode.Tag);
                 lineKeyBox.Value = canvasHandle.publicVaribles.selectedNode;
 
                 if (!canvasHandle.lineHandle.checkKeyAvailability(canvasHandle.publicVaribles.selectedNode)) //Checks if selected node exists so it can write to from existing LineObject
@@ -225,41 +198,42 @@ namespace LineDrawerDemo
         }
         private void selectedLinesTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (selectedLinesTreeView.SelectedNode.Tag.ToString() != "main") {
-                if (true) //(numClicks == 0)
+            if (selectedLinesTreeView.SelectedNode.Tag.ToString() != "main") 
+            {
+
+                canvasHandle.setSelectedNode((int)selectedLinesTreeView.SelectedNode.Tag);
+                lineKeyBox.Value = canvasHandle.publicVaribles.selectedNode;
+
+                if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1 != 0) { x1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1.ToString(); }
+                if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1 != 0) { y1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1.ToString(); }
+                if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2 != 0) { x2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2.ToString(); }
+                if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 != 0) { y2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2.ToString(); }
+
+                if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine || canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createLine) // line edit mode
                 {
-                    setSelectedNode((int)selectedLinesTreeView.SelectedNode.Tag);
-                    lineKeyBox.Value = canvasHandle.publicVaribles.selectedNode;
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1 != 0) { x1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1 != 0) { y1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2 != 0) { x2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 != 0) { y2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2.ToString(); }
-
-                    if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine || canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createLine) // line edit mode
+                    if (canvasHandle.publicVaribles.lineMultiLocking == false)
                     {
-                        if (canvasHandle.publicVaribles.lineMultiLocking == false)
-                        {
-                            canvasHandle.publicVaribles.selectedCanvasLineEnd = canvasHandle.publicVaribles.selectedLineObjects[canvasHandle.publicVaribles.selectedNode];
+                        canvasHandle.publicVaribles.selectedCanvasLineEnd = canvasHandle.publicVaribles.selectedLineObjects[canvasHandle.publicVaribles.selectedNode];
                             
-                            Point endPoint = canvasHandle.getLineEndCoordinates(canvasHandle.publicVaribles.selectedNode, canvasHandle.publicVaribles.selectedCanvasLineEnd);
-                            canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
-                            //Switch with comments to these code bits to require confirm button press, maybe add an if statement here for a public option varible
-                            //canvasHandle.numClicks = 1;
-                            btnConfirmCanvasLineAction.Enabled = true;
-                        }
-                        //else if (lineMultiLocking == true)
-                        //{
+                        Point endPoint = canvasHandle.getLineEndCoordinates(canvasHandle.publicVaribles.selectedNode, canvasHandle.publicVaribles.selectedCanvasLineEnd);
+                        canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
+                        //Switch with comments to these code bits to require confirm button press, maybe add an if statement here for a public option varible
+                        //canvasHandle.publicVaribles.currentNumClick = numClick.Second;
+                        canvasHandle.publicVaribles.ConfirmAction = true;
+                    }
+                    //else if (lineMultiLocking == true)
+                    //{
 
-                        //}
-                    }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine)
-                    {
-                        btnConfirmCanvasLineAction.Enabled = true;
-                        //resetSelectedLine();
-                    }
-                    linesDraw();
-                    canvasHandle.Redraw();
+                    //}
                 }
+                else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine)
+                {
+                    canvasHandle.publicVaribles.ConfirmAction = true;
+                    //resetSelectedLine();
+                }
+
+                canvasHandle.Redraw();
+                updateFormObjects();
             }
             else { exception.generateException(CustomExceptions.invalid_selected_node); } // invalid selected node
         }
@@ -269,7 +243,6 @@ namespace LineDrawerDemo
         //
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            
             //InitializeLineObject(10, 20, 120, 80);
             //BeginGraphics();
         }
@@ -288,10 +261,13 @@ namespace LineDrawerDemo
             //
             // GUI Redraw
             //
+            resetFormParameters();
             updateLineTreeView();
-            linesDraw();
-            resetSelectedLine();
-            setSelectedNode(tempLineKeyBox);
+            updateSelectedLineTreeView();
+            canvasHandle.setSelectedNode(tempLineKeyBox);
+            updateFormObjects();
+
+            canvasHandle.Redraw();
             //
         }
         private void btnRemove_Click(object sender, EventArgs e)
@@ -301,9 +277,12 @@ namespace LineDrawerDemo
             //
             // GUI Redraw
             //
+            resetFormParameters();
             updateLineTreeView();
-            linesDraw();
-            resetSelectedLine();
+            updateSelectedLineTreeView();
+            updateFormObjects();
+
+            canvasHandle.Redraw();
             //
         }
         private void btnSave_Click(object sender, EventArgs e)
@@ -322,10 +301,13 @@ namespace LineDrawerDemo
             //
             // GUI Redraw
             //
+            resetFormParameters();
             updateLineTreeView();
-            setSelectedNode(tempLineKeyBox);
+            updateSelectedLineTreeView();
+            canvasHandle.setSelectedNode(tempLineKeyBox);
+            updateFormObjects();
+
             canvasHandle.Redraw();
-            resetSelectedLine();
             //
 
         }
@@ -347,9 +329,12 @@ namespace LineDrawerDemo
             //
             // GUI Redraw
             //
+            resetFormParameters();
             updateLineTreeView();
-            linesDraw();
-            resetSelectedLine();
+            updateSelectedLineTreeView();
+            updateFormObjects();
+
+            canvasHandle.Redraw();
             //
         }
         private void btnReloadFile_Click(object sender, EventArgs e)
@@ -359,15 +344,18 @@ namespace LineDrawerDemo
             //
             // GUI Redraw
             //
+            resetFormParameters();
             updateLineTreeView();
-            linesDraw();
-            resetSelectedLine();
+            updateSelectedLineTreeView();
+            updateFormObjects();
+
+            canvasHandle.Redraw();
             //
         }
         private void checkBoxLabelLines_CheckedChanged(object sender, EventArgs e)
         {
             canvasHandle.publicVaribles.DebugMode = checkBoxDebugMode.Checked;
-            linesDraw();
+            canvasHandle.Redraw();
         }
         private void checkBoxLockInToLineEnds_CheckedChanged(object sender, EventArgs e)
         {
@@ -378,26 +366,30 @@ namespace LineDrawerDemo
         }
         private void radioBtnEditLineMode_CheckedChanged(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.editLine);
+            if (radioBtnEditLineMode.Checked) { canvasHandle.setCanvasMode(CanvasModes.editLine); }
+            guiExternalEvents.ResetFormParameters();
         }
         private void radioBtnCreateLineMode_CheckedChanged(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.createLine);
+            if (radioBtnCreateLineMode.Checked) { canvasHandle.setCanvasMode(CanvasModes.createLine); }
+            guiExternalEvents.ResetFormParameters();
         }
         private void radioBtnRemoveLineMode_CheckedChanged(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.removeLine);
+            if (radioBtnRemoveLineMode.Checked) { canvasHandle.setCanvasMode(CanvasModes.removeLine); }
+            guiExternalEvents.ResetFormParameters();
         }
         private void minSelectDistanceBox_ValueChanged(object sender, EventArgs e)
         {
             canvasHandle.publicVaribles.minSelectDistance = (int)minSelectDistanceBox.Value;
-            linesDraw();
+            canvasHandle.Redraw();
         }
         private void btnCancelCanvasLineAction_Click(object sender, EventArgs e)
         {
-            resetSelectedLine();
-            
-            linesDraw();
+            updateFormObjects();
+            resetFormParameters();
+
+            canvasHandle.Redraw();
         }
         private void btnConfirmCanvasLineAction_Click(object sender, EventArgs e)
         {
@@ -405,23 +397,26 @@ namespace LineDrawerDemo
             {
                 canvasHandle.publicVaribles.currentNumClick = numClick.Second;
 
-                btnConfirmCanvasLineAction.Enabled = false;
+                canvasHandle.publicVaribles.ConfirmAction = false;
                 selectedLinesTreeView.Nodes[0].Nodes.Clear();
             }
             else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine)
             {
                 bool tempSuccess = false;
                 canvasHandle.removeLineByDialog(canvasHandle.publicVaribles.selectedNode, out tempSuccess);
-                if (tempSuccess) { btnCancelCanvasLineAction.Enabled = false; btnConfirmCanvasLineAction.Enabled = false; }
+                if (tempSuccess) { canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false; }
 
-                //
-                // GUI Redraw
-                //
+                resetFormParameters();
                 updateLineTreeView();
-                linesDraw();
-                resetSelectedLine();
-                //
+                updateSelectedLineTreeView();
             }
+
+            //
+            // GUI Redraw
+            //
+            updateFormObjects();
+            canvasHandle.Redraw();
+            //
         }
         private void lineMultiLockingBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -430,39 +425,40 @@ namespace LineDrawerDemo
 
         private void toolStripMenuItemForceRedraw_Click(object sender, EventArgs e)
         {
-            linesDraw();
+            resetFormParameters();
+            canvasHandle.Redraw();
         }
 
         private void createLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.createLine);
+            canvasHandle.setCanvasMode(CanvasModes.createLine);
         }
 
         private void editLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.createLine);
+            canvasHandle.setCanvasMode(CanvasModes.createLine);
         }
 
         private void removeLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.removeLine);
+            canvasHandle.setCanvasMode(CanvasModes.removeLine);
         }
 
         private void createPolygonToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.createPolygon);
+            canvasHandle.setCanvasMode(CanvasModes.createPolygon);
         }
 
         private void enableToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             canvasHandle.publicVaribles.DebugMode = true;
-            linesDraw();
+            canvasHandle.Redraw();
         }
 
         private void disableToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             canvasHandle.publicVaribles.DebugMode = false;
-            linesDraw();
+            canvasHandle.Redraw();
         }
 
         private void enableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -487,12 +483,12 @@ namespace LineDrawerDemo
 
         private void radioBtnCreatePolygonMode_CheckedChanged(object sender, EventArgs e)
         {
-            setCanvasMode(CanvasModes.createPolygon);
+            canvasHandle.setCanvasMode(CanvasModes.createPolygon);
         }
 
         private void numPolygonCornersBox_ValueChanged(object sender, EventArgs e)
         {
-            canvasHandle.publicVaribles.selectedNode = (int)numPolygonCornersBox.Value;
+            canvasHandle.setSelectedNode((int)numPolygonCornersBox.Value);
         }
 
         private void resetCanvasToolStripMenuItem_Click(object sender, EventArgs e)
@@ -509,9 +505,12 @@ namespace LineDrawerDemo
             //
             // GUI Redraw
             //
+            resetFormParameters();
             updateLineTreeView();
-            linesDraw();
-            resetSelectedLine();
+            updateSelectedLineTreeView();
+            updateFormObjects();
+
+            canvasHandle.Redraw();
             //
         }
 
@@ -537,7 +536,7 @@ namespace LineDrawerDemo
 
         private void Canvas_SizeChanged(object sender, EventArgs e)
         {
-            linesDraw();
+            canvasHandle.Redraw();
         }
 
         public void button1_Click(object sender, EventArgs e)
@@ -549,6 +548,11 @@ namespace LineDrawerDemo
 
             Controls.Add(control);
             this.Invalidate();
+        }
+        
+        private void labelTextSizeBox_ValueChanged(object sender, EventArgs e)
+        {
+            canvasHandle.publicVaribles.labelFontSize = (int)labelTextSizeBox.Value;
         }
     }
 }

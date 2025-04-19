@@ -118,21 +118,14 @@ namespace LineDrawerDemo
                         {
                             if (lines.Count == 1) //Skips selected window and goes to numClick 2
                             {
-                                if (true)
-                                {
-                                    int[] line = lines[0];
-                                    //setSelectedNode(line[0]);
-                                    //setSelectedNodeAndLineEnd(line[0], line[1]);
+                                int[] line = lines[0];
 
-                                    canvasHandle.publicVaribles.selectedCanvasLineEnd = line[1]; //Set to selected line end
-                                    canvasHandle.publicVaribles.currentNumClick = numClick.Second;
+                                canvasHandle.publicVaribles.selectedCanvasLineEnd = line[1]; //Set to selected line end
+                                canvasHandle.publicVaribles.currentNumClick = numClick.Second;
+                                canvasHandle.setSelectedNode(line[0]);
 
-                                    Point endPoint = canvasHandle.getLineEndCoordinates(canvasHandle.publicVaribles.selectedNode, canvasHandle.publicVaribles.selectedCanvasLineEnd);
-                                    canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
-
-                                    externalEvents.UpdateFormObjects(); // Trigger Event
-
-                                }
+                                Point endPoint = canvasHandle.getLineEndCoordinates(canvasHandle.publicVaribles.selectedNode, canvasHandle.publicVaribles.selectedCanvasLineEnd);
+                                canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
                             }
                             else if (lines.Count > 0)
                             {
@@ -146,14 +139,6 @@ namespace LineDrawerDemo
                                 {
                                     canvasHandle.publicVaribles.currentNumClick = numClick.Second;
                                 }
-
-                                //
-                                // GUI Redraw
-                                //
-                                externalEvents.UpdateFormTreeViews(); // Trigger Event
-                                Redraw();
-                                //selectedLinesTreeView.Focus();
-                                //
                             }
                             else { canvasHandle.exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
 
@@ -163,6 +148,7 @@ namespace LineDrawerDemo
                             // GUI Redraw
                             //
                             externalEvents.UpdateFormObjects(); // Trigger Event
+                            externalEvents.UpdateFormTreeViews();
                             Redraw();
                             //
                         }
@@ -309,6 +295,9 @@ namespace LineDrawerDemo
                                 }
 
                                 externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
+                                canvasHandle.resetFormParameters();
+                                //canvasHandle.resetFormParameters();
+                                externalEvents.UpdateFormObjects();
 
                                 canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y); // viewing rectangle coordinates
                                 //canvasHandle.numClicks = 0;
@@ -366,6 +355,7 @@ namespace LineDrawerDemo
                                 }
 
                                 externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
+                                canvasHandle.resetFormParameters();
 
                                 canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                                 //canvasHandle.numClicks = 1;
@@ -379,6 +369,7 @@ namespace LineDrawerDemo
                             // GUI Redraw
                             //
                             externalEvents.UpdateFormTreeViews();
+                            externalEvents.UpdateFormObjects();
                             Redraw();
                             //
                         }
@@ -416,16 +407,17 @@ namespace LineDrawerDemo
                             canvasHandle.publicVaribles.currentNumClick = numClick.First;
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
                         }
-                        //
-                        // GUI Redraw
-                        //
-                        externalEvents.UpdateFormTreeViews();
-                        externalEvents.ResetFormParameters();
-                        Redraw();
-                        //
 
                         canvasHandle.publicVaribles.ConfirmAction = false; //Disables the buttons
                         canvasHandle.publicVaribles.CancelAction = false;
+
+                        //
+                        // GUI Redraw
+                        //
+                        externalEvents.ResetFormParameters();
+                        externalEvents.UpdateFormTreeViews();
+                        Redraw();
+                        //
                     }
                     else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine) //Line remove mode ------------------------------------------------------------------------------------
                     {
@@ -477,6 +469,8 @@ namespace LineDrawerDemo
                     }
                 }
                 //resetSelectedLine();
+                //canvasHandle.resetFormParameters();
+                Redraw();
             }
         }
 
@@ -534,7 +528,7 @@ namespace LineDrawerDemo
                         int posX = (int)Math.Round(tempX, 1);
                         int posY = (int)Math.Round(tempY, 1);
 
-                        Font font = new Font("StandardFont", 12, FontStyle.Regular);
+                        Font font = new Font("StandardFont", canvasHandle.publicVaribles.labelFontSize, FontStyle.Regular);
 
                         g.DrawString("line" + lineObject.Key, font, Brushes.Black, new Point(posX, posY));
 

@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="source\AddControlDuringRuntimeTestClass.cs" />
     <Compile Include="source\CanvasHandling\CanvasDrawingHandling.cs" />
     <Compile Include="source\CanvasHandling\CanvasHandling.cs" />
     <Compile Include="source\Objects\CanvasObject.cs" />

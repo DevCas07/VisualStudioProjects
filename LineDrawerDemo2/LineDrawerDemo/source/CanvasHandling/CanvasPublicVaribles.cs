@@ -27,32 +27,27 @@ namespace LineDrawerDemo
         //
         // Neccesarry Public Class Varibles ------------------------------------------
         //
+        public int selectedNode = 0;
         public int selectedCanvasLineEnd = 0;
-        //public int numClick = 0; //old system
         public numClick currentNumClick = numClick.First;
-        
+        public CanvasModes canvasLineMode = CanvasModes.None;
 
         public Point tempMouseStartPos = new Point();
         public Point tempMouseEndPos = new Point();
         public Point selectedPointPos = new Point();
 
-        public int selectedNode = 0;
         public bool lockInToLineEnds = false;
         public bool lineMultiLocking = false;
         public bool DebugMode = false;
 
-        //public string canvasLineMode = ""; //old system
-        public CanvasModes canvasLineMode = CanvasModes.None;
-
-
-        public int minSelectDistance = 10; //These four varibles could be parameters
-        public int lineWidth = 1;
+        public int minSelectDistance = 10; //These five varibles could be parameters
+        public int lineWidth = 3;
         public int numPolygonCorners = 4;
         public int radiusPolygon = 10;
+        public int labelFontSize = 8;
 
         public bool ConfirmAction = false;
         public bool CancelAction = false;
-
 
         public Dictionary<int, int> selectedLineObjects = new Dictionary<int, int>();
     }

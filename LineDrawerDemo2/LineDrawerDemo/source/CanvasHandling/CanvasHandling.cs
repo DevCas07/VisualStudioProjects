@@ -31,6 +31,17 @@ namespace LineDrawerDemo
 
             exception = LineDrawerDemo.ExceptionHandling.GetInstance();
         }
+        public void resetFormParameters()
+        {
+            publicVaribles.currentNumClick = numClick.First;
+
+            publicVaribles.ConfirmAction = false;
+            publicVaribles.CancelAction = false;
+
+            publicVaribles.selectedPointPos = new Point(-20, -20);
+
+            publicVaribles.selectedLineObjects.Clear();
+        }
         /// <summary>
         /// Creates new canvas control based on CanvasObject
         /// </summary>
@@ -440,10 +451,15 @@ namespace LineDrawerDemo
             //else if (modeId == "createLine") { canvasLineMode = "createLine"; }
             //else if (modeId == "removeLine") { canvasLineMode = "removeLine"; }
             //else if (modeId == "createPolygon") { canvasLineMode = "createPolygon"; }
-
+            
+            publicVaribles.canvasLineMode = canvasMode;
             publicVaribles.currentNumClick = numClick.First;
             publicVaribles.selectedLineObjects.Clear();
             publicVaribles.selectedPointPos = new Point(-20, -20);
+        }
+        public void setSelectedNode(int key)
+        {
+            publicVaribles.selectedNode = key;
         }
     }
 }
