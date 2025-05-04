@@ -171,7 +171,23 @@ namespace LineDrawerDemo
             }
             else { exception.generateException(CustomExceptions.not_existing_key); } // not existing key
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key">line id</param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        public void editLine(int key, int x1, int y1, int x2, int y2)
+        {
+            Dictionary<int, LineObject> lineObjects = lineHandle.GetLineObjects();
+            if (lineObjects.Count > 0)
+            {
+                lineHandle.editLineProperties(publicVaribles.selectedNode, x1, y1, x2, y2);
+            }
+            else { exception.generateException(CustomExceptions.not_existing_key); } // not existing key
+        }
         /// <summary>
         /// Checks if inputted coordinates is within distance to one of specified line's ends
         /// </summary>
@@ -272,31 +288,59 @@ namespace LineDrawerDemo
         /// <param name="baseYPos"></param>
         /// <param name="minDistance">minimun distance from mouse pointer which can be detected</param>
         /// <param name="lineEnd">returns which lineEnd is the closest from mouse pointer</param>
+        /// <param name="allowSelf">allow selectedNode key to be detected and used</param>
         /// <returns></returns>
-        public Point getClosestLineEndCoordinate(int baseXPos, int baseYPos, int minDistance, out int lineEnd) //Get line keys and line ends that are within a certain area
+        public Point getClosestLineEndCoordinate(int baseXPos, int baseYPos, int minDistance, out int lineEnd, bool allowSelf) //Get line keys and line ends that are within a certain area
         {
-            List<int[]> lines = getClosestLinesAsArrayWithLineEnds(baseXPos, baseYPos, minDistance);
-            int[] line = lines[0]; // (line key, line end)
-            LineObject lineObject = lineHandle.GetLine(line[0]);
-
-
             int tempXPos = 0;
             int tempYPos = 0;
+            Point lineCoordinates;
 
-            if (line[1] == 1)
+            List<int[]> lines = getClosestLinesAsArrayWithLineEnds(baseXPos, baseYPos, minDistance);
+            int[] line = lines[0]; // (line key, line end)
+            if (allowSelf == false) 
             {
-                tempXPos = lineObject.Realx1;
-                tempYPos = lineObject.Realy1;
-            }
-            else if (line[1] == 2)
-            {
-                tempXPos = lineObject.Realx2;
-                tempYPos = lineObject.Realy2;
-            }
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    line = lines[i]; // (line key, line end)
 
-            Point lineCoordinates = new Point(tempXPos, tempYPos);
+                    if (line[0] != publicVaribles.selectedNode)
+                    {
+                        LineObject lineObject = lineHandle.GetLine(line[0]);
+
+                        if (line[1] == 1) //Line end 1
+                        {
+                            tempXPos = lineObject.Realx1;
+                            tempYPos = lineObject.Realy1;
+                        }
+                        else if (line[1] == 2) //Line end 2
+                        {
+                            tempXPos = lineObject.Realx2;
+                            tempYPos = lineObject.Realy2;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (allowSelf == true)
+            {
+                LineObject lineObject = lineHandle.GetLine(line[0]);
+
+                if (line[1] == 1) //Line end 1
+                {
+                    tempXPos = lineObject.Realx1;
+                    tempYPos = lineObject.Realy1;
+                }
+                else if (line[1] == 2) //Line end 2
+                {
+                    tempXPos = lineObject.Realx2;
+                    tempYPos = lineObject.Realy2;
+                }
+            }
 
             lineEnd = line[1];
+
+            lineCoordinates = new Point(tempXPos, tempYPos);
             return lineCoordinates;
         }
         /// <summary>

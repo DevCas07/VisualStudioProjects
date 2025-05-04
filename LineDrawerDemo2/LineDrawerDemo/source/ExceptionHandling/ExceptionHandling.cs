@@ -13,7 +13,7 @@ namespace LineDrawerDemo
         // Exception handling
         //
 
-        private List<string> exceptionLog = new List<string> { " " };
+        private List<string> exceptionLog = new List<string>(); // { " " };
         private static ExceptionHandling instance;
 
         private ExceptionHandling()

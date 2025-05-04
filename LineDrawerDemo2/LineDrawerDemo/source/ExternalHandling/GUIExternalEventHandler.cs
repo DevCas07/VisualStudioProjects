@@ -25,6 +25,7 @@ namespace LineDrawerDemo
         public event GUIExternalEventHandler EventUpdateFormObjects;
         public event GUIExternalEventHandler EventUpdateFormTreeViews;
         public event GUIExternalEventHandler EventResetFormParameters;
+        public event GUIExternalEventHandler EventClearTreeViews;
 
         private GUIExternalEvents() { }
 
@@ -55,6 +56,10 @@ namespace LineDrawerDemo
         {
             EventUpdateFormTreeViews.Invoke(this, e);
         }
+        protected virtual void OnEventClearTreeViews(EventArgs e)
+        {
+            EventClearTreeViews.Invoke(this, e);
+        }
 
         //
         // Callable methods that trigger the events
@@ -71,6 +76,10 @@ namespace LineDrawerDemo
         public void ResetFormParameters()
         {
             OnEventResetFormParameters(EventArgs.Empty);
+        }
+        public void ClearTreeViews()
+        {
+            OnEventClearTreeViews(EventArgs.Empty);
         }
     }
 }

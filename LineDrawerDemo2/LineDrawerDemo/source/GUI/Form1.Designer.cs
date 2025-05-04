@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Main");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Main");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Main");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Main");
             this.panel5 = new System.Windows.Forms.Panel();
             this.checkBoxDebugMode = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -53,6 +53,8 @@
             this.lineMultiLockingBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel9 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.labelTextSizeBox = new System.Windows.Forms.NumericUpDown();
             this.numPolygonCornersBox = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
@@ -108,8 +110,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.resetCanvasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CanvasReference = new System.Windows.Forms.PictureBox();
-            this.labelTextSizeBox = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
             this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabFile.SuspendLayout();
@@ -119,6 +119,7 @@
             this.panel10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minSelectDistanceBox)).BeginInit();
             this.panel9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.labelTextSizeBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPolygonCornersBox)).BeginInit();
             this.panel8.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -128,7 +129,6 @@
             this.tabControl1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasReference)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.labelTextSizeBox)).BeginInit();
             this.SuspendLayout();
             // 
             // panel5
@@ -222,11 +222,11 @@
             // 
             this.selectedLinesTreeView.Location = new System.Drawing.Point(3, 3);
             this.selectedLinesTreeView.Name = "selectedLinesTreeView";
-            treeNode3.Name = "Node0";
-            treeNode3.Tag = "main";
-            treeNode3.Text = "Main";
+            treeNode1.Name = "Node0";
+            treeNode1.Tag = "main";
+            treeNode1.Text = "Main";
             this.selectedLinesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode1});
             this.selectedLinesTreeView.Size = new System.Drawing.Size(166, 126);
             this.selectedLinesTreeView.TabIndex = 1;
             this.selectedLinesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.selectedLinesTreeView_AfterSelect);
@@ -388,6 +388,39 @@
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(166, 200);
             this.panel9.TabIndex = 21;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 30);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 24;
+            this.label3.Tag = "";
+            this.label3.Text = "labelTextSize:";
+            // 
+            // labelTextSizeBox
+            // 
+            this.labelTextSizeBox.Location = new System.Drawing.Point(77, 28);
+            this.labelTextSizeBox.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.labelTextSizeBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.labelTextSizeBox.Name = "labelTextSizeBox";
+            this.labelTextSizeBox.Size = new System.Drawing.Size(44, 20);
+            this.labelTextSizeBox.TabIndex = 23;
+            this.labelTextSizeBox.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.labelTextSizeBox.ValueChanged += new System.EventHandler(this.labelTextSizeBox_ValueChanged);
             // 
             // numPolygonCornersBox
             // 
@@ -643,12 +676,12 @@
             this.linesTreeView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.linesTreeView.Location = new System.Drawing.Point(3, 169);
             this.linesTreeView.Name = "linesTreeView";
-            treeNode4.Name = "Node0";
-            treeNode4.Tag = "main";
-            treeNode4.Text = "Main";
-            treeNode4.ToolTipText = "Root";
+            treeNode2.Name = "Node0";
+            treeNode2.Tag = "main";
+            treeNode2.Text = "Main";
+            treeNode2.ToolTipText = "Root";
             this.linesTreeView.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
+            treeNode2});
             this.linesTreeView.Size = new System.Drawing.Size(166, 260);
             this.linesTreeView.TabIndex = 0;
             this.linesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.linesTreeView_AfterSelect);
@@ -693,12 +726,14 @@
             this.saveFileToolStripMenuItem.Name = "saveFileToolStripMenuItem";
             this.saveFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.saveFileToolStripMenuItem.Text = "Save File";
+            this.saveFileToolStripMenuItem.Click += new System.EventHandler(this.saveFileToolStripMenuItem_Click);
             // 
             // openFileToolStripMenuItem
             // 
             this.openFileToolStripMenuItem.Name = "openFileToolStripMenuItem";
             this.openFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.openFileToolStripMenuItem.Text = "Open File";
+            this.openFileToolStripMenuItem.Click += new System.EventHandler(this.openFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -710,6 +745,7 @@
             this.reloadFileToolStripMenuItem.Name = "reloadFileToolStripMenuItem";
             this.reloadFileToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.reloadFileToolStripMenuItem.Text = "Reload File";
+            this.reloadFileToolStripMenuItem.Click += new System.EventHandler(this.reloadFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -742,14 +778,14 @@
             // toolStripMenuItemForceRedraw
             // 
             this.toolStripMenuItemForceRedraw.Name = "toolStripMenuItemForceRedraw";
-            this.toolStripMenuItemForceRedraw.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemForceRedraw.Size = new System.Drawing.Size(176, 22);
             this.toolStripMenuItemForceRedraw.Text = "Force Redraw";
             this.toolStripMenuItemForceRedraw.Click += new System.EventHandler(this.toolStripMenuItemForceRedraw_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
             // 
             // debugModeToolStripMenuItem
             // 
@@ -757,7 +793,7 @@
             this.enableToolStripMenuItem2,
             this.disableToolStripMenuItem2});
             this.debugModeToolStripMenuItem.Name = "debugModeToolStripMenuItem";
-            this.debugModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.debugModeToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.debugModeToolStripMenuItem.Text = "Debug Mode";
             // 
             // enableToolStripMenuItem2
@@ -777,7 +813,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
             // 
             // lineModeToolStripMenuItem
             // 
@@ -787,7 +823,7 @@
             this.removeLineToolStripMenuItem,
             this.createPolygonToolStripMenuItem});
             this.lineModeToolStripMenuItem.Name = "lineModeToolStripMenuItem";
-            this.lineModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lineModeToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.lineModeToolStripMenuItem.Text = "Line Mode";
             // 
             // createLineToolStripMenuItem
@@ -824,7 +860,7 @@
             this.enableToolStripMenuItem,
             this.disableToolStripMenuItem});
             this.lockIntoLineEndsToolStripMenuItem.Name = "lockIntoLineEndsToolStripMenuItem";
-            this.lockIntoLineEndsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lockIntoLineEndsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.lockIntoLineEndsToolStripMenuItem.Text = "Lock Into Line Ends";
             // 
             // enableToolStripMenuItem
@@ -847,7 +883,7 @@
             this.enableToolStripMenuItem1,
             this.disableToolStripMenuItem1});
             this.multiLineLockingToolStripMenuItem.Name = "multiLineLockingToolStripMenuItem";
-            this.multiLineLockingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.multiLineLockingToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.multiLineLockingToolStripMenuItem.Text = "Multi Line Locking";
             // 
             // enableToolStripMenuItem1
@@ -867,12 +903,12 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(173, 6);
             // 
             // resetCanvasToolStripMenuItem
             // 
             this.resetCanvasToolStripMenuItem.Name = "resetCanvasToolStripMenuItem";
-            this.resetCanvasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resetCanvasToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.resetCanvasToolStripMenuItem.Text = "Reset Canvas";
             this.resetCanvasToolStripMenuItem.Click += new System.EventHandler(this.resetCanvasToolStripMenuItem_Click);
             // 
@@ -890,29 +926,6 @@
             this.CanvasReference.TabStop = false;
             this.CanvasReference.Visible = false;
             this.CanvasReference.SizeChanged += new System.EventHandler(this.Canvas_SizeChanged);
-            // 
-            // labelTextSizeBox
-            // 
-            this.labelTextSizeBox.Location = new System.Drawing.Point(77, 28);
-            this.labelTextSizeBox.Name = "labelTextSizeBox";
-            this.labelTextSizeBox.Size = new System.Drawing.Size(44, 20);
-            this.labelTextSizeBox.TabIndex = 23;
-            this.labelTextSizeBox.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.labelTextSizeBox.ValueChanged += new System.EventHandler(this.labelTextSizeBox_ValueChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 30);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(73, 13);
-            this.label3.TabIndex = 24;
-            this.label3.Tag = "";
-            this.label3.Text = "labelTextSize:";
             // 
             // MainWindow
             // 
@@ -942,6 +955,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minSelectDistanceBox)).EndInit();
             this.panel9.ResumeLayout(false);
             this.panel9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.labelTextSizeBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPolygonCornersBox)).EndInit();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
@@ -954,7 +968,6 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasReference)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.labelTextSizeBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

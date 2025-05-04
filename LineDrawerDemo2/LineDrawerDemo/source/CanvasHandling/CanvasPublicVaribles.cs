@@ -41,7 +41,7 @@ namespace LineDrawerDemo
         public bool DebugMode = false;
 
         public int minSelectDistance = 10; //These five varibles could be parameters
-        public int lineWidth = 3;
+        public int lineWidth = 2;
         public int numPolygonCorners = 4;
         public int radiusPolygon = 10;
         public int labelFontSize = 8;
