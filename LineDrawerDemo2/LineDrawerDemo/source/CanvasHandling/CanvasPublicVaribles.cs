@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LineDrawerDemo
 {
@@ -48,6 +49,8 @@ namespace LineDrawerDemo
 
         public bool ConfirmAction = false;
         public bool CancelAction = false;
+
+        public string fileLocation = Application.StartupPath; //@"C:\";
 
         public Dictionary<int, int> selectedLineObjects = new Dictionary<int, int>();
     }

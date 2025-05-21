@@ -15,19 +15,23 @@ namespace LineDrawerDemo
     /// </summary>
     public class FileHandling
     {
-        public string fileLocation = @"C:\"; //Application.StartupPath;
-        private LineHandling lineHandle;
+        private CanvasHandling canvasHandle;
         private ExceptionHandling exception;
 
-        public FileHandling(LineHandling tempLineHandle)// TODO interface som bara visar variabeln lineHandle
+        public FileHandling(CanvasHandling tempCanvasHandle)// TODO interface som bara visar variabeln lineHandle?
         {
-            this.lineHandle = tempLineHandle;
+            this.canvasHandle = tempCanvasHandle;
             exception = ExceptionHandling.GetInstance();
         }
 
         //
         // Save File Handling ------------------------------------------
         //
+
+        public void reloadfile(string location)
+        {
+            readLineFile(location);
+        }
 
         /// <summary>
         /// Opens a SaveFileDialog
@@ -41,7 +45,7 @@ namespace LineDrawerDemo
 
             if (save.ShowDialog() == DialogResult.OK)
             {
-                fileLocation = save.FileName;
+                canvasHandle.publicVaribles.fileLocation = save.FileName;
                 writeLineFile(save.FileName);
             }
         }
@@ -50,14 +54,16 @@ namespace LineDrawerDemo
         /// Attempts to save and write file, adds lines from dictionary
         /// </summary>
         /// <param name="location">File location</param>
-        public void writeLineFile(string location) //Attempts to save and write file, adds lines from dictionary
+        private void writeLineFile(string location) //Attempts to save and write file, adds lines from dictionary
         {
             try
             {
-                if (lineHandle.LineObjects.Count != 0)
+                Dictionary<int, LineObject> lineObjects = canvasHandle.GetLineObjects();
+
+                if (lineObjects.Count != 0)
                 {
                     StreamWriter write = new StreamWriter(location);
-                    foreach (var lineObject in lineHandle.LineObjects)
+                    foreach (var lineObject in lineObjects)
                     {
                         write.WriteLine(
                             "line:" + lineObject.Key
@@ -91,7 +97,7 @@ namespace LineDrawerDemo
 
             if (open.ShowDialog() == DialogResult.OK)
             {
-                fileLocation = open.FileName;
+                canvasHandle.publicVaribles.fileLocation = open.FileName;
                 readLineFile(open.FileName);
             }
         }
@@ -99,11 +105,11 @@ namespace LineDrawerDemo
         /// Attempts to reads and loads file, adds file line contents to dictionary
         /// </summary>
         /// <param name="location">File location</param>
-        public void readLineFile(string location) //Attempts to read and load file, adds file line contents to dictionary
+        private void readLineFile(string location) //Attempts to read and load file, adds file line contents to dictionary
         {
             try
             {
-                lineHandle.LineObjects.Clear();
+                canvasHandle.ClearLineObjects();
 
                 string[] lines = System.IO.File.ReadAllLines(location);
                 if (lines.Length != 0)
@@ -142,22 +148,15 @@ namespace LineDrawerDemo
                                     break;
                             }
                         }
-                        if (lineHandle.checkKeyAvailability(tempKey))
-                        {
-                            lineHandle.InitializeLineObject(tempKey, tempX1, tempY1, tempX2, tempY2);
-                        }
-                        else
-                        {
 
-                        }
+                        canvasHandle.createLine(tempKey, tempX1, tempY1, tempX2, tempY2);
                     }
                 }
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex)
             {
                 exception.generateException(CustomExceptions.unauthorized_directory_or_file_access);
             }
         }
-
     }
 }

@@ -11,11 +11,12 @@ using System.Windows.Forms;
 namespace LineDrawerDemo
 {
     /// <summary>
-    /// Handles drawing inside the Canvas 
+    /// Handles drawing inside the Canvas and mouse interactions
     /// </summary>
     public class CanvasDrawingHandling
     {
         private CanvasHandling canvasHandle;
+        private ExceptionHandling exception;
 
         private PictureBox CanvasPictureBox;
         private CanvasObject canvasObject;
@@ -25,6 +26,7 @@ namespace LineDrawerDemo
         public CanvasDrawingHandling(CanvasHandling canvasHandleObject) 
         {
             canvasHandle = canvasHandleObject;
+            exception = ExceptionHandling.GetInstance();
 
             CanvasPictureBox = new PictureBox();
             canvasObject = new CanvasObject();
@@ -103,18 +105,16 @@ namespace LineDrawerDemo
         //
         private void Canvas_MouseClick(object sender, MouseEventArgs e)
         {
-            //onMouseClickGetCoordinates(e.Location.X, e.Location.Y);
-            //int temp1 = getClosestLineAsKey(e.Location.X, e.Location.Y, out int LineEnd);
-            //List<int[]> temp2 = getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, 10);
-            //int[] temp3 = getClosestLinesAsArray(e.Location.X, e.Location.Y, 10);
             if (canvasHandle.publicVaribles.DebugMode == true)
             {
-                if (canvasHandle.publicVaribles.currentNumClick == numClick.First) //First mouse click
+                Dictionary<int, LineObject> lineObjects = canvasHandle.GetLineObjects();
+
+                if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine) //Line edit mode ------------------------------------------------------------------------------------
                 {
-                    if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine) //Line edit mode ------------------------------------------------------------------------------------
+                    if (canvasHandle.publicVaribles.currentNumClick == numClick.First) //First mouse click
                     {
                         List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
-                        if (canvasHandle.lineHandle.LineObjects.Count > 0)
+                        if (lineObjects.Count() > 0)
                         {
                             if (lines.Count == 1) //Skips selected window and goes to numClick 2
                             {
@@ -144,7 +144,7 @@ namespace LineDrawerDemo
 
                                 canvasHandle.publicVaribles.CancelAction = true;
                             }
-                            else { canvasHandle.exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
+                            else { exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
 
                             //
                             // GUI Redraw
@@ -154,9 +154,153 @@ namespace LineDrawerDemo
                             //Redraw();
                             //
                         }
-                        else { canvasHandle.exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
+                        else { exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
                     }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createLine) //Line create mode ------------------------------------------------------------------------------------
+                    else if (canvasHandle.publicVaribles.currentNumClick == numClick.Second) //Second mouse click
+                    {
+                        if (lineObjects.Count > 0)
+                        {
+                            List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
+
+                            if (lines.Count > 0 && canvasHandle.publicVaribles.lockInToLineEnds == true) //Checks if lines count is over one and if lockInLineEnds is true
+                            {
+                                Point endPoint = canvasHandle.getClosestLineEndCoordinate(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance, out int lineEnd, false);
+
+                                if (canvasHandle.publicVaribles.lineMultiLocking == false) //No MultiLineLocking 
+                                {
+                                    if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 1)
+                                    {
+                                        canvasHandle.editLine(canvasHandle.publicVaribles.selectedNode, //key
+                                            endPoint.X, //x1
+                                            endPoint.Y, //y1
+                                            lineObjects[canvasHandle.publicVaribles.selectedNode].Realx2, //x2
+                                            lineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 //y2
+                                            );
+                                    }
+                                    else if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 2)
+                                    {
+                                        canvasHandle.editLine(canvasHandle.publicVaribles.selectedNode, //key
+                                        lineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
+                                        lineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
+                                        endPoint.X, //x2
+                                        endPoint.Y //y2
+                                        );
+                                    }
+                                }
+                                else if (canvasHandle.publicVaribles.lineMultiLocking == true) //With MultiLineLocking
+                                {
+                                    Point lineEndPoint;
+                                    foreach (var line in canvasHandle.publicVaribles.selectedLineObjects) //Go through the dictionary and edit each line's coordinates to LockedIntoLineEnd's coordinate
+                                    {
+                                        lineEndPoint = canvasHandle.getLineEndCoordinates(line.Key, line.Value);
+
+                                        if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 1)
+                                        {
+                                            canvasHandle.editLine(canvasHandle.publicVaribles.selectedNode, //key
+                                                lineEndPoint.X, //x1
+                                                lineEndPoint.Y, //y1
+                                                lineObjects[canvasHandle.publicVaribles.selectedNode].Realx2, //x2
+                                                lineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 //y2
+                                                );
+                                        }
+                                        else if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 2)
+                                        {
+                                            canvasHandle.editLine(canvasHandle.publicVaribles.selectedNode, //key
+                                                lineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
+                                                lineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
+                                                lineEndPoint.X, //x2
+                                                lineEndPoint.Y //y2
+                                                );
+                                        }
+                                    }
+                                }
+
+                                //externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
+                                //canvasHandle.resetFormParameters();
+                                //externalEvents.UpdateFormObjects();
+
+                                canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y); // viewing rectangle coordinates
+                                                                                                                  //canvasHandle.numClicks = 0;
+
+                            }
+                            else //Executes if no nearby line is found, if lines <= 0 or if LockIntoLineEnds == false
+                            {
+                                if (canvasHandle.publicVaribles.lineMultiLocking == false) //No MultiLineLocking
+                                {
+                                    if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 1) //checks if selected line end is first end
+                                    {
+                                        canvasHandle.editLine(
+                                            canvasHandle.publicVaribles.selectedNode, //key
+                                            e.Location.X, //x1
+                                            e.Location.Y, //y1
+                                            lineObjects[canvasHandle.publicVaribles.selectedNode].Realx2, //x2
+                                            lineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 //y2
+                                            );
+                                    }
+                                    else if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 2) //checks if selected line end is second end
+                                    {
+                                        canvasHandle.editLine(canvasHandle.publicVaribles.selectedNode, //key
+                                            lineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
+                                            lineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
+                                            e.Location.X, //x2
+                                            e.Location.Y //y2
+                                            );
+                                    }
+                                }
+                                else if (canvasHandle.publicVaribles.lineMultiLocking == true) //With MultiLineLocking
+                                {
+                                    foreach (var line in canvasHandle.publicVaribles.selectedLineObjects) //Go through the dictionary and edit each line's coordinates to LockedIntoLineEnd's coordinate
+                                    {
+                                        int tempLineEnd = line.Value;
+                                        if (tempLineEnd == 1) //checks if event line end is first end
+                                        {
+                                            canvasHandle.editLine(
+                                                line.Key, //key
+                                                e.Location.X, //x1
+                                                e.Location.Y, //y1
+                                                lineObjects[line.Key].Realx2, //x2
+                                                lineObjects[line.Key].Realy2 //y2
+                                                );
+                                        }
+                                        else if (tempLineEnd == 2) //checks if event line end is second end
+                                        {
+                                            canvasHandle.editLine(line.Key, //key
+                                                lineObjects[line.Key].Realx1, //x1
+                                                lineObjects[line.Key].Realy1, //y1
+                                                e.Location.X, //x2
+                                                e.Location.Y //y2
+                                                );
+                                        }
+                                    }
+                                }
+
+                                //externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
+                                //canvasHandle.resetFormParameters();
+
+                                canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
+
+                                canvasHandle.publicVaribles.currentNumClick = numClick.First;
+                            }
+
+                            //resetSelectedLine(); //Maybe add a if statement to a multi after eachother selecting option public varible
+                            canvasHandle.publicVaribles.ConfirmAction = false;
+                            canvasHandle.publicVaribles.CancelAction = false;
+
+                            //
+                            // GUI Redraw
+                            //
+                            externalEvents.ClearTreeViews();
+                            externalEvents.UpdateFormTreeViews();
+                            externalEvents.UpdateFormObjects();
+                            //Redraw();
+                            //
+                        }
+                        else { exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
+                    }
+                } //Line edit mode ------------------------------------------------------------------------------------
+                else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createLine) //Line create mode ------------------------------------------------------------------------------------
+                {
+                    if (canvasHandle.publicVaribles.currentNumClick == numClick.First) //First mouse click
                     {
                         List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
                         if (lines.Count > 0 && canvasHandle.publicVaribles.lockInToLineEnds == true)
@@ -184,204 +328,9 @@ namespace LineDrawerDemo
                         //Redraw();
                         //
                     }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine) //Line remove mode ------------------------------------------------------------------------------------
+                    else if (canvasHandle.publicVaribles.currentNumClick == numClick.Second) //Second mouse click
                     {
-                        List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
-                        if (canvasHandle.lineHandle.LineObjects.Count > 0)
-                        {   
-                            if (lines.Count == 1) //Skips selected window and goes to attempt to remove selected node
-                            {
-                                int[] line = lines[0];
-                                canvasHandle.publicVaribles.selectedNode = line[0];
-
-                                bool tempSuccess;
-                                canvasHandle.removeLineByDialog(canvasHandle.publicVaribles.selectedNode, out tempSuccess);
-                                if (tempSuccess) { canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false; }
-                                externalEvents.ResetFormParameters();
-                            }
-                            else if (lines.Count > 0)
-                            {
-                                canvasHandle.InitializeTempSelectableLines(lines);
-                            }
-                            else { canvasHandle.exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
-                            //btnCancelCanvasLineAction.Enabled = true;
-
-                            //
-                            // GUI Redraw
-                            //
-                            externalEvents.UpdateFormObjects(); // Trigger Event
-                            externalEvents.UpdateFormTreeViews(); // Trigger Event
-                            //Redraw();
-                            //
-
-                        }
-                        else { canvasHandle.exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
-                    }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createPolygon) //Polygon create mode ------------------------------------------------------------------------------------
-                    {
-                        canvasHandle.publicVaribles.tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
-                        canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y);
-
-                        canvasHandle.publicVaribles.CancelAction = true;
-
-                        canvasHandle.publicVaribles.currentNumClick = numClick.Second;
-
-                        //
-                        // GUI Redraw
-                        //
-                        externalEvents.UpdateFormObjects(); // Trigger Event
-                        //Redraw();
-                        //
-                    }
-                    //btnCancelCanvasLineAction.Enabled = true;
-
-                }
-                else if (canvasHandle.publicVaribles.currentNumClick == numClick.Second) //Second mouse click
-                {
-                    if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine) //Line edit mode ------------------------------------------------------------------------------------
-                    {
-                        if (canvasHandle.lineHandle.LineObjects.Count > 0)
-                        {
-                            List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
-
-                            if (lines.Count > 0 && canvasHandle.publicVaribles.lockInToLineEnds == true) //Checks if lines count is over one and if lockInLineEnds is true
-                            {
-                                Point endPoint = canvasHandle.getClosestLineEndCoordinate(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance, out int lineEnd, false);
-                                
-                                if (canvasHandle.publicVaribles.lineMultiLocking == false) //No MultiLineLocking 
-                                {
-                                    if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 1)
-                                    {
-                                        canvasHandle.lineHandle.editLineProperties(canvasHandle.publicVaribles.selectedNode, //key
-                                            endPoint.X, //x1
-                                            endPoint.Y, //y1
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2, //x2
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 //y2
-                                            );
-                                    }
-                                    else if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 2)
-                                    {
-                                        canvasHandle.lineHandle.editLineProperties(canvasHandle.publicVaribles.selectedNode, //key
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
-                                            endPoint.X, //x2
-                                            endPoint.Y //y2
-                                            );
-                                    }
-                                }
-                                else if (canvasHandle.publicVaribles.lineMultiLocking == true) //With MultiLineLocking
-                                {
-                                    Point lineEndPoint;
-                                    foreach (var line in canvasHandle.publicVaribles.selectedLineObjects) //Go through the dictionary and edit each line's coordinates to LockedIntoLineEnd's coordinate
-                                    {
-                                        lineEndPoint = canvasHandle.getLineEndCoordinates(line.Key, line.Value);
-
-                                        if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 1)
-                                        {
-                                            canvasHandle.lineHandle.editLineProperties(canvasHandle.publicVaribles.selectedNode, //key
-                                                lineEndPoint.X, //x1
-                                                lineEndPoint.Y, //y1
-                                                canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2, //x2
-                                                canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 //y2
-                                                );
-                                        }
-                                        else if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 2)
-                                        {
-                                            canvasHandle.lineHandle.editLineProperties(canvasHandle.publicVaribles.selectedNode, //key
-                                                canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
-                                                canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
-                                                lineEndPoint.X, //x2
-                                                lineEndPoint.Y //y2
-                                                );
-                                        }
-                                    }
-                                }
-
-                                //externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
-                                //canvasHandle.resetFormParameters();
-                                //externalEvents.UpdateFormObjects();
-
-                                canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y); // viewing rectangle coordinates
-                                //canvasHandle.numClicks = 0;
-
-                            }
-                            else //Executes if no nearby line is found, if lines <= 0 or if LockIntoLineEnds == false
-                            {
-                                if (canvasHandle.publicVaribles.lineMultiLocking == false) //No MultiLineLocking
-                                {
-                                    if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 1) //checks if selected line end is first end
-                                    {
-                                        canvasHandle.lineHandle.editLineProperties(
-                                            canvasHandle.publicVaribles.selectedNode, //key
-                                            e.Location.X, //x1
-                                            e.Location.Y, //y1
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2, //x2
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 //y2
-                                            );
-                                    }
-                                    else if (canvasHandle.publicVaribles.selectedCanvasLineEnd == 2) //checks if selected line end is second end
-                                    {
-                                        canvasHandle.lineHandle.editLineProperties(canvasHandle.publicVaribles.selectedNode, //key
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1, //x1
-                                            canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1, //y1
-                                            e.Location.X, //x2
-                                            e.Location.Y //y2
-                                            );
-                                    }
-                                }
-                                else if (canvasHandle.publicVaribles.lineMultiLocking == true) //With MultiLineLocking
-                                {
-                                    foreach (var line in canvasHandle.publicVaribles.selectedLineObjects) //Go through the dictionary and edit each line's coordinates to LockedIntoLineEnd's coordinate
-                                    {
-                                        int tempLineEnd = line.Value;
-                                        if (tempLineEnd == 1) //checks if event line end is first end
-                                        {
-                                            canvasHandle.lineHandle.editLineProperties(
-                                                line.Key, //key
-                                                e.Location.X, //x1
-                                                e.Location.Y, //y1
-                                                canvasHandle.lineHandle.LineObjects[line.Key].Realx2, //x2
-                                                canvasHandle.lineHandle.LineObjects[line.Key].Realy2 //y2
-                                                );
-                                        }
-                                        else if (tempLineEnd == 2) //checks if event line end is second end
-                                        {
-                                            canvasHandle.lineHandle.editLineProperties(line.Key, //key
-                                                canvasHandle.lineHandle.LineObjects[line.Key].Realx1, //x1
-                                                canvasHandle.lineHandle.LineObjects[line.Key].Realy1, //y1
-                                                e.Location.X, //x2
-                                                e.Location.Y //y2
-                                                );
-                                        }
-                                    }
-                                }
-
-                                //externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
-                                //canvasHandle.resetFormParameters();
-
-                                canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
-                                
-                                canvasHandle.publicVaribles.currentNumClick = numClick.First;
-                            }
-
-                            //resetSelectedLine(); //Maybe add a if statement to a multi after eachother selecting option public varible
-                            canvasHandle.publicVaribles.ConfirmAction = false;
-                            canvasHandle.publicVaribles.CancelAction = false;
-
-                            //
-                            // GUI Redraw
-                            //
-                            externalEvents.ClearTreeViews();
-                            externalEvents.UpdateFormTreeViews();
-                            externalEvents.UpdateFormObjects();
-                            //Redraw();
-                            //
-                        }
-                        else { canvasHandle.exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
-                    }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createLine) //Line create mode ------------------------------------------------------------------------------------
-                    {
-                        int key = canvasHandle.lineHandle.getLowestAvailableKey();
+                        int key = canvasHandle.getLowestAvailableKey();
                         List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
                         if (lines.Count > 0 && canvasHandle.publicVaribles.lockInToLineEnds == true) //Checks if lines count is over zero and if lockInLineEnds is true
                         {
@@ -410,7 +359,7 @@ namespace LineDrawerDemo
                                 canvasHandle.publicVaribles.tempMouseEndPos.X,
                                 canvasHandle.publicVaribles.tempMouseEndPos.Y
                                 );
-                            
+
                             //externalEvents.ResetFormParameters(); // Trigger Event, executes before "overriding" code
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
 
@@ -429,42 +378,98 @@ namespace LineDrawerDemo
                         //Redraw();
                         //
                     }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine) //Line remove mode ------------------------------------------------------------------------------------
+                } //Line create mode ------------------------------------------------------------------------------------
+                else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine) //Line remove mode ------------------------------------------------------------------------------------
+                {
+                    if (canvasHandle.publicVaribles.currentNumClick == numClick.First) //First mouse click
                     {
-
-                    }
-                    else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createPolygon) //Polygon create mode ------------------------------------------------------------------------------------
-                    {
+                        List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
+                        if (canvasHandle.GetLineObjectsCount() > 0)
                         {
-                            canvasHandle.publicVaribles.tempMouseEndPos = new Point(e.Location.X, e.Location.Y);
-                            canvasHandle.publicVaribles.radiusPolygon = (int)Math.Sqrt(
-                                Math.Pow((canvasHandle.publicVaribles.tempMouseEndPos.X - canvasHandle.publicVaribles.tempMouseStartPos.X), 2) +
-                                Math.Pow((canvasHandle.publicVaribles.tempMouseEndPos.Y - canvasHandle.publicVaribles.tempMouseStartPos.Y), 2));
+                            if (lines.Count == 1) //Skips selected window and goes to attempt to remove selected node
+                            {
+                                int[] line = lines[0];
+                                canvasHandle.publicVaribles.selectedNode = line[0];
 
-                            double angleExtension = ((180 * Math.Atan2(canvasHandle.publicVaribles.tempMouseEndPos.Y - canvasHandle.publicVaribles.tempMouseStartPos.Y,
-                                                                        canvasHandle.publicVaribles.tempMouseEndPos.X - canvasHandle.publicVaribles.tempMouseStartPos.X)
-                            ) / Math.PI);
+                                bool tempSuccess;
+                                canvasHandle.removeLineByDialog(canvasHandle.publicVaribles.selectedNode, out tempSuccess);
+                                if (tempSuccess) { canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false; }
+                                externalEvents.ResetFormParameters();
+                            }
+                            else if (lines.Count > 0)
+                            {
+                                canvasHandle.InitializeTempSelectableLines(lines);
 
+                                canvasHandle.publicVaribles.CancelAction = true;
+                                canvasHandle.publicVaribles.ConfirmAction = true;
+                            }
+                            else { exception.generateException(CustomExceptions.no_line_end_nearby); } // no close line end
+                            //btnCancelCanvasLineAction.Enabled = true;
 
-                            Dictionary<int, (Point, Point)> polygonLines = canvasHandle.createPolygonLines(canvasHandle.publicVaribles.tempMouseStartPos.X, canvasHandle.publicVaribles.tempMouseStartPos.Y, canvasHandle.publicVaribles.numPolygonCorners, canvasHandle.publicVaribles.radiusPolygon, angleExtension);
-                            canvasHandle.InitialisePolygon(polygonLines);
+                            //
+                            // GUI Redraw
+                            //
+                            canvasHandle.publicVaribles.selectedPointPos = new Point(e.X, e.Y);
+                            externalEvents.UpdateFormObjects(); // Trigger Event
+                            externalEvents.UpdateFormTreeViews(); // Trigger Event
+                            //Redraw();
+                            //
 
-                            canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
-                            canvasHandle.publicVaribles.currentNumClick = numClick.First;
                         }
+                        else { exception.generateException(CustomExceptions.no_existing_lines); } // no existing lines
+                    }
+                    else if (canvasHandle.publicVaribles.currentNumClick == numClick.Second) //Second mouse click
+                    {
+                        
+                    }
+                } //Line remove mode ------------------------------------------------------------------------------------
+                else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createPolygon) //Polygon create mode ------------------------------------------------------------------------------------
+                {
+                    if (canvasHandle.publicVaribles.currentNumClick == numClick.First) //First mouse click
+                    {
+                        canvasHandle.publicVaribles.tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
+                        canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y);
+
+                        canvasHandle.publicVaribles.CancelAction = true;
+
+                        canvasHandle.publicVaribles.currentNumClick = numClick.Second;
+
+                        //
+                        // GUI Redraw
+                        //
+                        externalEvents.UpdateFormObjects(); // Trigger Event
+                        //Redraw();
+                        //
+                    }
+                    else if (canvasHandle.publicVaribles.currentNumClick == numClick.Second) //Second mouse click
+                    {
+                        canvasHandle.publicVaribles.tempMouseEndPos = new Point(e.Location.X, e.Location.Y);
+                        canvasHandle.publicVaribles.radiusPolygon = (int)Math.Sqrt(
+                            Math.Pow((canvasHandle.publicVaribles.tempMouseEndPos.X - canvasHandle.publicVaribles.tempMouseStartPos.X), 2) +
+                            Math.Pow((canvasHandle.publicVaribles.tempMouseEndPos.Y - canvasHandle.publicVaribles.tempMouseStartPos.Y), 2));
+
+                        double angleExtension = ((180 * Math.Atan2(canvasHandle.publicVaribles.tempMouseEndPos.Y - canvasHandle.publicVaribles.tempMouseStartPos.Y,
+                                                                    canvasHandle.publicVaribles.tempMouseEndPos.X - canvasHandle.publicVaribles.tempMouseStartPos.X)
+                        ) / Math.PI);
+
+
+                        Dictionary<int, (Point, Point)> polygonLines = canvasHandle.createPolygonLines(canvasHandle.publicVaribles.tempMouseStartPos.X, canvasHandle.publicVaribles.tempMouseStartPos.Y, canvasHandle.publicVaribles.numPolygonCorners, canvasHandle.publicVaribles.radiusPolygon, angleExtension);
+                        canvasHandle.InitialisePolygon(polygonLines);
+
+                        canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y); // viewing rectangle coordinates
+                        canvasHandle.publicVaribles.currentNumClick = numClick.First;
 
                         List<int[]> lines = canvasHandle.getClosestLinesAsArrayWithLineEnds(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance);
                         if (lines.Count > 0 && canvasHandle.publicVaribles.lockInToLineEnds == true)
                         {
                             Point endPoint = canvasHandle.getClosestLineEndCoordinate(e.Location.X, e.Location.Y, canvasHandle.publicVaribles.minSelectDistance, out int lineEnd, true);
-                            
+
                             canvasHandle.publicVaribles.tempMouseStartPos = new Point(endPoint.X, endPoint.Y);
-                            canvasHandle.publicVaribles.currentNumClick = numClick.Second;  
+                            canvasHandle.publicVaribles.currentNumClick = numClick.Second;
                             canvasHandle.publicVaribles.selectedPointPos = new Point(endPoint.X, endPoint.Y);
                         }
                         else //Executes if no nearby line is found, if lines <= 0
                         {
-                            //generateException("");
                             canvasHandle.publicVaribles.tempMouseStartPos = new Point(e.Location.X, e.Location.Y);
                             canvasHandle.publicVaribles.selectedPointPos = new Point(e.Location.X, e.Location.Y);
                             canvasHandle.publicVaribles.currentNumClick = numClick.Second;
@@ -477,14 +482,13 @@ namespace LineDrawerDemo
                         //Redraw();
                         //
                     }
+                } //Polygon create mode ------------------------------------------------------------------------------------
 
-                    //Point tempHolding = new Point(e.Location.X, e.Location.Y); // save viewing rectangle coordinates
-                    //canvasHandle.resetFormParameters();
-                    //canvasHandle.publicVaribles.selectedPointPos = tempHolding; // re-set viewing rectangle coordinates
-                }
-                //resetSelectedLine();
-                //canvasHandle.resetFormParameters();
+                //
+                // GUI Redraw
+                //
                 Redraw();
+                //
             }
         }
 
@@ -498,11 +502,11 @@ namespace LineDrawerDemo
         //
         private void lineCanvas_Paint(object sender, PaintEventArgs e)
         {
-            if (canvasHandle.lineHandle.LineObjects.Keys.Count > 0)
+            if (canvasHandle.GetLineObjectsCount() > 0)
             {
                 //this.SuspendLayout();
                 Graphics g = e.Graphics; //Create drawing canvas
-                Dictionary<int, LineObject> lineObjects = canvasHandle.lineHandle.GetLineObjects();
+                Dictionary<int, LineObject> lineObjects = canvasHandle.GetLineObjects();
 
                 foreach (var lineObject in lineObjects) //Extract every line from list and draw them
                 {

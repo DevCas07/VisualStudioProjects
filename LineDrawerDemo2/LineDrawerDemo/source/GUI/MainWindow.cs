@@ -16,6 +16,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -23,7 +24,6 @@ using static LineDrawerDemo.MainWindow;
 
 namespace LineDrawerDemo
 {
-
     public partial class MainWindow : Form
     {
         CanvasObject canvasObject;
@@ -31,11 +31,28 @@ namespace LineDrawerDemo
         ExceptionHandling exception = ExceptionHandling.GetInstance(); //Retrieve a singleton instance of Exception handling
         CanvasHandling canvasHandle;
         GUIExternalEvents guiExternalEvents;
+
+
         AddControlDuringRuntimeTestClass AddControlDuringRuntimeTestClass123; //Information sending test class
 
         public MainWindow()
         {
             InitializeComponent();
+
+            //
+            //Initialise interpreter and arguments
+            //
+            //interpreter = new Interpreter();
+
+            //set interpreter arguments to application arguments
+            //interpreter.argumentStrings = Environment.GetCommandLineArgs();
+
+            //MessageBox.Show(interpreter.argumentStrings.ToString());
+            //Thread.Sleep(2000);
+            //if (interpreter.checkArgument("arg1", false))
+            //{
+                //MessageBox.Show("arg 1 ('arg1') is correct");
+            //}
 
             //
             // Initialise all externally callable events
@@ -48,7 +65,7 @@ namespace LineDrawerDemo
             guiExternalEvents.EventClearTreeViews += EventClearTreeViews;
 
             //
-            // Initialise new canvas surface's position and size
+            // Initialise new canvas surface's position and size, in this case based on the deprecated but existing PixtureBox canvas as a template
             //
             canvasObject = new CanvasObject();
             canvasObject.position = new Point(this.CanvasReference.Location.X, this.CanvasReference.Location.Y);
@@ -157,7 +174,7 @@ namespace LineDrawerDemo
         public void updateLineTreeView() //Updates the treeView to correspond to the updated dictionary's contents
         {
             linesTreeView.Nodes[0].Nodes.Clear();
-            Dictionary<int, LineObject> LineObjects = canvasHandle.lineHandle.GetLineObjects();
+            Dictionary<int, LineObject> LineObjects = canvasHandle.GetLineObjects();
 
             foreach (var lineObject in LineObjects.Keys)
             {
@@ -210,14 +227,15 @@ namespace LineDrawerDemo
 
                 canvasHandle.setSelectedNode((int)linesTreeView.SelectedNode.Tag);
                 lineKeyBox.Value = canvasHandle.publicVaribles.selectedNode;
+                LineObject lineObject = canvasHandle.GetLine(canvasHandle.publicVaribles.selectedNode);
 
-                if (!canvasHandle.lineHandle.checkKeyAvailability(canvasHandle.publicVaribles.selectedNode)) //Checks if selected node exists so it can write to from existing LineObject
+                if (!canvasHandle.checkKeyAvailability(canvasHandle.publicVaribles.selectedNode)) //Checks if selected node exists so it can write to from existing LineObject
                 //if (true)
                 {
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1 != 0) { x1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1 != 0) { y1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2 != 0) { x2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 != 0) { y2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2.ToString(); }
+                    if (lineObject.Realx1 != 0) { x1Box.Text = lineObject.Realx1.ToString(); }
+                    if (lineObject.Realy1 != 0) { y1Box.Text = lineObject.Realy1.ToString(); }
+                    if (lineObject.Realx2 != 0) { x2Box.Text = lineObject.Realx2.ToString(); }
+                    if (lineObject.Realy2 != 0) { y2Box.Text = lineObject.Realy2.ToString(); }
                 }
                 else { exception.generateException(CustomExceptions.not_existing_key); }
 
@@ -235,11 +253,12 @@ namespace LineDrawerDemo
 
                     canvasHandle.setSelectedNode((int)selectedLinesTreeView.SelectedNode.Tag);
                     lineKeyBox.Value = canvasHandle.publicVaribles.selectedNode;
+                    LineObject lineObject = canvasHandle.GetLine(canvasHandle.publicVaribles.selectedNode);
 
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1 != 0) { x1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx1.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1 != 0) { y1Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy1.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2 != 0) { x2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realx2.ToString(); }
-                    if (canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2 != 0) { y2Box.Text = canvasHandle.lineHandle.LineObjects[canvasHandle.publicVaribles.selectedNode].Realy2.ToString(); }
+                    if (lineObject.Realx1 != 0) { x1Box.Text = lineObject.Realx1.ToString(); }
+                    if (lineObject.Realy1 != 0) { y1Box.Text = lineObject.Realy1.ToString(); }
+                    if (lineObject.Realx2 != 0) { x2Box.Text = lineObject.Realx2.ToString(); }
+                    if (lineObject.Realy2 != 0) { y2Box.Text = lineObject.Realy2.ToString(); }
 
                     if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.editLine 
                         || canvasHandle.publicVaribles.canvasLineMode == CanvasModes.createLine) // line edit mode or line create mode
@@ -352,13 +371,13 @@ namespace LineDrawerDemo
         }
         private void btnSaveFile_Click(object sender, EventArgs e)
         {
-            canvasHandle.fileHandle.viewSaveFileDialog();
-            fileLocationBox.Text = canvasHandle.fileHandle.fileLocation;
+            canvasHandle.viewSaveFileDialog();
+            fileLocationBox.Text = canvasHandle.publicVaribles.fileLocation;
         }
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
-            canvasHandle.fileHandle.viewOpenFileDialog();
-            fileLocationBox.Text = canvasHandle.fileHandle.fileLocation;
+            canvasHandle.viewOpenFileDialog();
+            fileLocationBox.Text = canvasHandle.publicVaribles.fileLocation;
 
             //
             // GUI Redraw
@@ -373,7 +392,7 @@ namespace LineDrawerDemo
         }
         private void btnReloadFile_Click(object sender, EventArgs e)
         {
-            canvasHandle.fileHandle.readLineFile(canvasHandle.fileHandle.fileLocation);
+            canvasHandle.reloadFile(canvasHandle.publicVaribles.fileLocation);
 
             //
             // GUI Redraw
@@ -436,14 +455,43 @@ namespace LineDrawerDemo
             }
             else if (canvasHandle.publicVaribles.canvasLineMode == CanvasModes.removeLine)
             {
-                bool tempSuccess = false;
-                canvasHandle.removeLineByDialog(canvasHandle.publicVaribles.selectedNode, out tempSuccess);
-                if (tempSuccess) { canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false; }
+                if (canvasHandle.publicVaribles.lineMultiLocking == false)
+                {
+                    bool tempSuccess = false;
+                    canvasHandle.removeLineByDialog(canvasHandle.publicVaribles.selectedNode, out tempSuccess);
+                    if (tempSuccess) 
+                    { 
+                        canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false;
 
-                resetFormParameters();
-                ClearTreeViews();
-                updateLineTreeView();
-                updateSelectedLineTreeView();
+                        resetFormParameters();
+                        ClearTreeViews();
+                        updateLineTreeView();
+                        updateSelectedLineTreeView();
+                    }
+
+                }
+                else if (canvasHandle.publicVaribles.lineMultiLocking == true)
+                {
+                    List<int> lines = new List<int>();
+
+                    Dictionary<int, int> LineObjectsTemp = canvasHandle.publicVaribles.selectedLineObjects;
+                    foreach (var line in LineObjectsTemp.Keys)
+                    {
+                        lines.Add(line);
+                    }
+
+                    bool tempSuccess = false;
+                    canvasHandle.removeLinesByDialog(lines, out tempSuccess);
+                    if (tempSuccess) 
+                    { 
+                        canvasHandle.publicVaribles.CancelAction = false; canvasHandle.publicVaribles.ConfirmAction = false;
+
+                        resetFormParameters();
+                        ClearTreeViews();
+                        updateLineTreeView();
+                        updateSelectedLineTreeView();
+                    }
+                }
             }
 
             //
@@ -530,7 +578,9 @@ namespace LineDrawerDemo
         private void resetCanvasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<int> lines = new List<int>();
-            foreach (var line in canvasHandle.lineHandle.LineObjects.Keys)
+
+            Dictionary<int, LineObject> LineObjectsTemp = canvasHandle.GetLineObjects();
+            foreach (var line in LineObjectsTemp.Keys)
             {
                 lines.Add(line);
             }
@@ -595,14 +645,14 @@ namespace LineDrawerDemo
 
         private void saveFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            canvasHandle.fileHandle.viewSaveFileDialog();
-            fileLocationBox.Text = canvasHandle.fileHandle.fileLocation;
+            canvasHandle.viewSaveFileDialog();
+            fileLocationBox.Text = canvasHandle.publicVaribles.fileLocation;
         }
 
         private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            canvasHandle.fileHandle.viewOpenFileDialog();
-            fileLocationBox.Text = canvasHandle.fileHandle.fileLocation;
+            canvasHandle.viewOpenFileDialog();
+            fileLocationBox.Text = canvasHandle.publicVaribles.fileLocation;
 
             //
             // GUI Redraw
@@ -618,7 +668,7 @@ namespace LineDrawerDemo
 
         private void reloadFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            canvasHandle.fileHandle.readLineFile(canvasHandle.fileHandle.fileLocation);
+            canvasHandle.reloadFile(canvasHandle.publicVaribles.fileLocation);
 
             //
             // GUI Redraw
