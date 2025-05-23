@@ -10,14 +10,14 @@ namespace CommandLineInterpreterLibrary
         public string infoMessage { get; set; } = "Type 'info' to list all available commands";
         public string[] argumentStrings { get; set; } = { "" };
         public char interpreterCharacter { get; set; } = '>';
-        internal int index { get; set; } = 0;
-        internal Dictionary<string, bool> requiredParameters { get; set; } = new Dictionary<string, bool>();
-        internal bool requireParameters { get; set; } = true;
+        private int index { get; set; } = 0;
+        private Dictionary<string, bool> requiredParameters { get; set; } = new Dictionary<string, bool>();
+        private bool requireParameters { get; set; } = true;
         //public Dictionary<string, string> parameterValues { get; set; }
-        internal int parameterIndex { get; set; } = 0;
-        internal int totalParameterAmount { get; set; } = 0;
-        internal bool isFirstParameter = true;
-        internal bool isFirstArgument = true;
+        private int parameterIndex { get; set; } = 0;
+        private int totalParameterAmount { get; set; } = 0;
+        private bool isFirstParameter = true;
+        private bool isFirstArgument = true;
         public bool debugMode { get; set; } = false;
 
 
@@ -130,7 +130,7 @@ namespace CommandLineInterpreterLibrary
             }
             return false;
         }
-        internal void resetArguments()
+        private void resetArguments()
         {
             //requireParameters = false;
             //parameterIndex = 0;
@@ -139,7 +139,7 @@ namespace CommandLineInterpreterLibrary
             index = 0;
             isFirstParameter = true;
         }
-        internal void InitialiseRequiredParameters(string[] requiredParameterIds, int totParameterAmount) //Maybe add a default value funtionality
+        private void InitialiseRequiredParameters(string[] requiredParameterIds, int totParameterAmount) //Maybe add a default value funtionality
         {
             requireParameters = true;
             totalParameterAmount = totParameterAmount;
@@ -154,7 +154,7 @@ namespace CommandLineInterpreterLibrary
                 requiredParameters.Add(requiredParameterIds[i], false);
             }
         }
-        internal void checkIfRequiredParametersPassed()
+        private void checkIfRequiredParametersPassed()
         {
             foreach (var parameter in requiredParameters)
             {
