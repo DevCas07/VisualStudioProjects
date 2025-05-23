@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>LineDrawerDemo</RootNamespace>
     <AssemblyName>LineDrawerDemo</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +35,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLineInterpreterLibrary">
+      <HintPath>..\..\CommandLineInterpreterLibrary\CommandLineInterpreterLibrary\bin\Debug\net9.0\CommandLineInterpreterLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
@@ -53,24 +66,25 @@
     <Compile Include="source\AddControlDuringRuntimeTestClass.cs" />
     <Compile Include="source\CanvasHandling\CanvasDrawingHandling.cs" />
     <Compile Include="source\CanvasHandling\CanvasHandling.cs" />
+    <Compile Include="source\Interface\Interface1.cs" />
     <Compile Include="source\Objects\CanvasObject.cs" />
     <Compile Include="source\CanvasHandling\CanvasPublicVaribles.cs" />
     <Compile Include="source\ExceptionHandling\CustomExceptions.cs" />
     <Compile Include="source\ExceptionHandling\ExceptionHandling.cs" />
     <Compile Include="source\FileHandling\FileHandling.cs" />
-    <Compile Include="source\GUI\Form1.cs">
+    <Compile Include="source\GUI\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="source\GUI\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="source\GUI\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="source\ExternalHandling\GUIExternalEventHandler.cs" />
     <Compile Include="source\LineHandling\LineHandling.cs" />
     <Compile Include="source\Objects\LineObject.cs" />
     <Compile Include="source\BaseProgram\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="source\GUI\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="source\GUI\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -80,7 +94,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using static LineDrawerDemo.MainWindow;
+using CommandLineInterpreterLibrary;
 
 namespace LineDrawerDemo
 {
@@ -51,12 +52,17 @@ namespace LineDrawerDemo
             //Thread.Sleep(2000);
             //if (interpreter.checkArgument("arg1", false))
             //{
-                //MessageBox.Show("arg 1 ('arg1') is correct");
+            //MessageBox.Show("arg 1 ('arg1') is correct");
             //}
+
+
+            string[] args = Environment.GetCommandLineArgs();
+            Interpreter interpreter = new Interpreter();
 
             //
             // Initialise all externally callable events
             //
+
             guiExternalEvents = GUIExternalEvents.GetInstance();
 
             guiExternalEvents.EventUpdateFormTreeViews += EventUpdateFormTreeViews;
